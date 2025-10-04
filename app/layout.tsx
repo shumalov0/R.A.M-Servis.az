@@ -2,6 +2,8 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import LazyThreeBackground from '@/components/LazyThreeBackground';
+import ClientLayout from '@/components/ClientLayout';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -72,6 +74,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          {/* Three.js Background - lazy loaded to improve initial performance */}
+          <LazyThreeBackground 
+            scene="minimal" 
+            intensity="low" 
+            responsive={true}
+          />
           <script
             type="application/ld+json"
             suppressHydrationWarning
@@ -101,7 +109,9 @@ export default function RootLayout({
               })
             }}
           />
-          {children}
+          <ClientLayout>
+            {children}
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>

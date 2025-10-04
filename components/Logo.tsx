@@ -22,10 +22,10 @@ export default function Logo({
     <Link href={href} className="flex items-center group">
       <span className={`relative ${heightClass} w-[140px] md:w-[200px]`}>
         <span className="absolute inset-0 block dark:hidden">
-          <Image src={lightSrc} alt={alt} fill sizes="200px" className="object-contain" priority={false} />
+          <Image src={lightSrc} alt={alt} fill sizes="200px" className="object-contain" priority />
         </span>
         <span className="absolute inset-0 hidden dark:block">
-          <Image src={darkSrc} alt={alt} fill sizes="200px" className="object-contain" priority={false} />
+          <Image src={darkSrc} alt={alt} fill sizes="200px" className="object-contain" priority />
         </span>
       </span>
     </Link>

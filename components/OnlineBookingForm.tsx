@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Calendar, MapPin, User, Mail, Phone, CreditCard } from 'lucide-react';
 import Image from 'next/image';
 import { Car, locations, additionalServices } from '@/lib/data';
-import { sendBookingEmails } from '@/lib/email';
+import { sendBookingEmailsLegacy } from '@/lib/email';
 import { Translation } from '@/lib/translations';
 
 interface OnlineBookingFormProps {
@@ -168,7 +168,7 @@ export default function OnlineBookingForm({ car, currentLang, t }: OnlineBooking
         services: (formData.additionalServices.map(id => additionalServices.find(s => s.id === id)?.name).filter(Boolean).join(', ') || 'Yoxdur'),
         total: `$${pricing.total}`,
       };
-      await sendBookingEmails(payload);
+      await sendBookingEmailsLegacy(payload);
     } catch (e) {
       console.warn('Email sending failed or skipped:', e);
     }

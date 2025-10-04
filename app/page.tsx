@@ -1,16 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import CarsSection from "@/components/CarsSection";
 import Footer from "@/components/Footer";
-import { cars } from "@/lib/data";
+import { cars, enhancedCars } from "@/lib/data";
 import { useTranslation } from "@/lib/translations";
 import BookingBar from "@/components/BookingBar";
 import CategoriesGrid from "@/components/CategoriesGrid";
 import Advanced from "@/components/Advanced";
 import LoadingSpinner from "@/components/LoadingSpinner";
+
+// Lazy load heavy components to improve initial page load
+const GoogleReviews = lazy(() => import("@/components/GoogleReviews"));
+const CertificatesCarousel = lazy(() => import("@/components/CertificatesCarousel").then(module => ({ default: module.CertificatesCarousel })));
+const OtherCarsSection = lazy(() => import("@/components/OtherCarsSection"));
+
+import { certificates } from "@/lib/data";
 
 export default function Home() {
   const [currentLang, setCurrentLang] = useState("az");
@@ -91,14 +98,18 @@ export default function Home() {
           </section>
 
           {/* BookingBar */}
-          <section   className="relative flex items-center justify-center bg-fixed bg-center bg-cover py-10 h-[100%] md:h-96"
-      style={{ backgroundImage: "url('/cars/search.jpg')" }}>
-         <div className="absolute inset-0 bg-black/40"></div>
+          <section
+            className="relative flex items-center justify-center bg-fixed bg-center bg-cover py-10 h-[100%] md:h-96"
+            style={{ backgroundImage: "url('/cars/search.jpg')" }}
+          >
+            <div className="absolute inset-0 bg-black/40"></div>
             <div className="relative z-10 max-w-6xl w-full px-4 ">
-            <div className='text flex flex-col text-center  justify-center items-center '>
-              <p className="text-[10px] sari" >Rent Now</p>
-              <h1 className="bookau">Book Auto Rental</h1>
-          </div>
+              <div className="text flex flex-col text-center  justify-center items-center ">
+                <p className="text-[10px] sari">Rent Now</p>
+                <h2 className="bookau text-4xl md:text-6xl font-bold text-white mb-8">
+                  Book Auto Rental
+                </h2>
+              </div>
               <BookingBar />
             </div>
           </section>
@@ -120,6 +131,63 @@ export default function Home() {
               getLocalizedFuelType={getLocalizedFuelType}
               getLocalizedTransmission={getLocalizedTransmission}
             />
+          </section>
+
+          {/* Other Cars Section */}
+          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
+            <OtherCarsSection
+              cars={enhancedCars}
+              excludeIds={cars.slice(0, 6).map((car) => car.id)} // Exclude first 6 cars shown in main section
+              maxCars={8}
+              currentLang={currentLang}
+              t={t}
+              getLocalizedCarClass={getLocalizedCarClass}
+              getLocalizedFuelType={getLocalizedFuelType}
+              getLocalizedTransmission={getLocalizedTransmission}
+            />
+          </Suspense>
+
+          {/* Customer Reviews */}
+          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
+            <GoogleReviews
+              maxReviews={6}
+              showRating={true}
+              currentLang={currentLang}
+            />
+          </Suspense>
+
+          {/* Certificates Carousel */}
+          <section className="py-16 bg-white/70 dark:bg-brand-dark/70">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                  {currentLang === "az"
+                    ? "Sertifikatlarımız"
+                    : currentLang === "en"
+                    ? "Our Certificates"
+                    : currentLang === "ru"
+                    ? "Наши сертификаты"
+                    : "شهاداتنا"}
+                </h2>
+                <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                  {currentLang === "az"
+                    ? "Keyfiyyət və etibarlılığımızı təsdiq edən rəsmi sertifikatlar"
+                    : currentLang === "en"
+                    ? "Official certificates confirming our quality and reliability"
+                    : currentLang === "ru"
+                    ? "Официальные сертификаты, подтверждающие наше качество и надежность"
+                    : "الشهادات الرسمية التي تؤكد جودتنا وموثوقيتنا"}
+                </p>
+              </div>
+              <Suspense fallback={<div className="py-8"><LoadingSpinner /></div>}>
+                <CertificatesCarousel
+                  certificates={certificates}
+                  autoPlay={false}
+                  showDots={true}
+                  currentLang={currentLang}
+                />
+              </Suspense>
+            </div>
           </section>
         </>
       )}

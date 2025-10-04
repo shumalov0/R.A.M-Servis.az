@@ -46,7 +46,11 @@ export default function CarDetailClient({ car, currentLang, onShowBookingForm }:
       </Button>
 
       <Button 
-        onClick={onShowBookingForm}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          onShowBookingForm();
+        }}
         className="w-full bg-amber-600 hover:bg-amber-700 text-white h-14 text-lg"
       >
         <CreditCard className="h-5 w-5 mr-2" />

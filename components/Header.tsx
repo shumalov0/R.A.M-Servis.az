@@ -117,6 +117,7 @@ import { Car, Heart } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
 import MobileMenu from "./MobileMenu";
+import CarCategoryDropdown from "./CarCategoryDropdown";
 import { FC, useEffect, useState } from "react";
 import { Translation } from "@/lib/translations";
 import Link from "next/link";
@@ -134,16 +135,23 @@ const Header: FC<HeaderProps> = ({ currentLang, handleLanguageChange, t }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setIsScrolled(window.scrollY > 10);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
 <header
-  className={`fixed top-0 w-full z-30 transition-colors duration-300 ${
+  className={`fixed top-0 w-full z-30 transition-colors duration-200 ${
     isScrolled
       ? "bg-white/80 dark:bg-brand-dark/80 backdrop-blur-md shadow-lg border-b border-gray-200/20 dark:border-gray-700/20"
       : "bg-transparent"
@@ -164,7 +172,6 @@ const Header: FC<HeaderProps> = ({ currentLang, handleLanguageChange, t }) => {
       <nav className="hidden md:flex items-center space-x-10">
         {[
           { href: "/", label: "Home" },
-          { href: "/cars", label: t.cars || "Maşınlar" },
           { href: "/services", label: t.services || "Xidmətlər" },
           { href: "/about", label: t.about || "Haqqımızda" },
           { href: "/contact", label: t.contact || "Əlaqə" },
@@ -172,18 +179,25 @@ const Header: FC<HeaderProps> = ({ currentLang, handleLanguageChange, t }) => {
           <Link
             key={item.href}
             href={item.href}
+            prefetch={true}
             className={`relative group font-semibold tracking-wide ${
               isScrolled
                 ? "text-gray-800 dark:text-gray-200"
                 : "text-white"
             }`}
           >
-            <span className="duration-100 group-hover:text-brand-gold dark:group-hover:text-brand-gold">
+            <span className="duration-75 group-hover:text-brand-gold dark:group-hover:text-brand-gold">
               {item.label}
             </span>
-            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold transition-all duration-500 group-hover:w-full rounded-full shadow-[0_0_8px_rgba(245,183,84,0.8)]"></span>
+            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gradient-to-r from-brand-gold via-yellow-400 to-brand-gold transition-all duration-200 group-hover:w-full rounded-full shadow-[0_0_8px_rgba(245,183,84,0.8)]"></span>
           </Link>
         ))}
+        
+        {/* Car Category Dropdown */}
+        <CarCategoryDropdown 
+          currentLang={currentLang} 
+          isScrolled={isScrolled}
+        />
       </nav>
 
       {/* Controls */}

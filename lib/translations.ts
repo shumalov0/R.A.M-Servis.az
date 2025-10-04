@@ -121,6 +121,27 @@ export interface Translation {
   // Common
   person: string;
   people: string;
+  
+  // Enhanced Car Detail Page
+  availability: string;
+  available: string;
+  unavailable: string;
+  specifications: string;
+  overview: string;
+  specs: string;
+  rules: string;
+  similarCars: string;
+  customerReviews: string;
+  shareThisCar: string;
+  addToFavorites: string;
+  removeFromFavorites: string;
+  viewFullscreen: string;
+  previousImage: string;
+  nextImage: string;
+  imageGallery: string;
+  loading: string;
+  errorLoadingImage: string;
+  retryLoading: string;
 }
 
 export const translations: Record<string, Translation> = {
@@ -247,6 +268,27 @@ export const translations: Record<string, Translation> = {
     // Common
     person: 'nəfər',
     people: 'nəfər',
+    
+    // Enhanced Car Detail Page
+    availability: 'Mövcudluq',
+    available: 'Mövcuddur',
+    unavailable: 'Mövcud deyil',
+    specifications: 'Texniki xüsusiyyətlər',
+    overview: 'Ümumi məlumat',
+    specs: 'Texniki',
+    rules: 'Qaydalar',
+    similarCars: 'Oxşar maşınlar',
+    customerReviews: 'Müştəri rəyləri',
+    shareThisCar: 'Bu maşını paylaş',
+    addToFavorites: 'Sevimlilərə əlavə et',
+    removeFromFavorites: 'Sevimlilərdən sil',
+    viewFullscreen: 'Tam ekranda bax',
+    previousImage: 'Əvvəlki şəkil',
+    nextImage: 'Növbəti şəkil',
+    imageGallery: 'Şəkil qalereyası',
+    loading: 'Yüklənir...',
+    errorLoadingImage: 'Şəkil yüklənmədi',
+    retryLoading: 'Yenidən cəhd et',
   },
   
   en: {
@@ -372,6 +414,27 @@ export const translations: Record<string, Translation> = {
     // Common
     person: 'person',
     people: 'people',
+    
+    // Enhanced Car Detail Page
+    availability: 'Availability',
+    available: 'Available',
+    unavailable: 'Unavailable',
+    specifications: 'Specifications',
+    overview: 'Overview',
+    specs: 'Specs',
+    rules: 'Rules',
+    similarCars: 'Similar Cars',
+    customerReviews: 'Customer Reviews',
+    shareThisCar: 'Share this car',
+    addToFavorites: 'Add to favorites',
+    removeFromFavorites: 'Remove from favorites',
+    viewFullscreen: 'View fullscreen',
+    previousImage: 'Previous image',
+    nextImage: 'Next image',
+    imageGallery: 'Image gallery',
+    loading: 'Loading...',
+    errorLoadingImage: 'Failed to load image',
+    retryLoading: 'Retry loading',
   },
   
   ru: {
@@ -497,6 +560,27 @@ export const translations: Record<string, Translation> = {
     // Common
     person: 'человек',
     people: 'человек',
+    
+    // Enhanced Car Detail Page
+    availability: 'Доступность',
+    available: 'Доступен',
+    unavailable: 'Недоступен',
+    specifications: 'Технические характеристики',
+    overview: 'Обзор',
+    specs: 'Характеристики',
+    rules: 'Правила',
+    similarCars: 'Похожие автомобили',
+    customerReviews: 'Отзывы клиентов',
+    shareThisCar: 'Поделиться этим автомобилем',
+    addToFavorites: 'Добавить в избранное',
+    removeFromFavorites: 'Удалить из избранного',
+    viewFullscreen: 'Просмотр в полноэкранном режиме',
+    previousImage: 'Предыдущее изображение',
+    nextImage: 'Следующее изображение',
+    imageGallery: 'Галерея изображений',
+    loading: 'Загрузка...',
+    errorLoadingImage: 'Не удалось загрузить изображение',
+    retryLoading: 'Повторить загрузку',
   },
   
   ar: {
@@ -622,6 +706,27 @@ export const translations: Record<string, Translation> = {
     // Common
     person: 'شخص',
     people: 'أشخاص',
+    
+    // Enhanced Car Detail Page
+    availability: 'التوفر',
+    available: 'متوفر',
+    unavailable: 'غير متوفر',
+    specifications: 'المواصفات الفنية',
+    overview: 'نظرة عامة',
+    specs: 'المواصفات',
+    rules: 'القواعد',
+    similarCars: 'سيارات مماثلة',
+    customerReviews: 'آراء العملاء',
+    shareThisCar: 'شارك هذه السيارة',
+    addToFavorites: 'أضف إلى المفضلة',
+    removeFromFavorites: 'إزالة من المفضلة',
+    viewFullscreen: 'عرض بملء الشاشة',
+    previousImage: 'الصورة السابقة',
+    nextImage: 'الصورة التالية',
+    imageGallery: 'معرض الصور',
+    loading: 'جاري التحميل...',
+    errorLoadingImage: 'فشل في تحميل الصورة',
+    retryLoading: 'إعادة المحاولة',
   },
 };
 

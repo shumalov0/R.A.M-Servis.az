@@ -18,6 +18,8 @@ import { useFavorites } from "@/hooks/use-favorites";
 import { Translation } from "@/lib/translations";
 import LoadingSpinner from "./LoadingSpinner";
 import LocationIcon from "@/public/icons/location.svg";
+// Removed animation imports for better performance
+import { useRouter } from "next/navigation";
 
 interface CarsSectionProps {
   cars: Car[];
@@ -38,6 +40,7 @@ const CarsSection: FC<CarsSectionProps> = ({
 }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     // Simulate loading time
@@ -49,33 +52,33 @@ const CarsSection: FC<CarsSectionProps> = ({
   }, []);
 
   return (
-    <section
-      id="cars"
-      className="py-20 px-4 sm:px-6 lg:px-8 dark:bg-brand-dark/80"
-    >
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold text-center text-gray-900 dark:text-white mb-12">
-          {t.ourFleet.split(" ").slice(0, -2).join(" ")}{" "}
-          <span className="text-brand-gold dark:text-brand-gold">
-            {t.ourFleet.split(" ").slice(-2).join(" ")}
-          </span>
-        </h2>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <LoadingSpinner size="lg" />
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {cars.map((car) => (
-              <Card className="rounded-2xl shadow-lg hover:shadow-2xl transition-all overflow-hidden border border-gray-200 dark:border-gray-800 group:hover:delay-150 w-[90%] group-hover:scale-110 ">
-                {/* Şəkil hissəsi */}
-                <div className="aspect-video relative  overflow-hidden imageParent  ">
+    <>
+      {isLoading ? (
+        <div className="flex justify-center items-center py-20">
+          <LoadingSpinner size="lg" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {cars.map((car) => (
+            <Link
+              key={car.id}
+              href={`/car/${car.id}?lang=${currentLang}`}
+              prefetch={true}
+              className="block"
+            >
+              <Card className="rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-800 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300">
+              
+              {/* Şəkil hissəsi */}
+              <div className="aspect-video relative overflow-hidden imageParent">
                   <Image
                     src={car.images?.length ? car.images[0] : car.image}
                     alt={`${car.brand} ${car.model}`}
                     fill
-                    className="object-cover transition-transform duration-500  h-full imag hover:scale-110 "
+                    className="object-cover h-full"
+                    priority={false}
+                    loading="lazy"
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   />
 
                   {/* Badge */}
@@ -98,6 +101,7 @@ const CarsSection: FC<CarsSectionProps> = ({
                     aria-label="Toggle favorite"
                     onClick={(e) => {
                       e.preventDefault();
+                      e.stopPropagation();
                       toggleFavorite(car.id);
                     }}
                     className="absolute top-4 right-4 p-2 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:scale-110 transition"
@@ -124,7 +128,7 @@ const CarsSection: FC<CarsSectionProps> = ({
 
                   {/* Ayrıcı xətt */}
                   <div className="border-t border-gray-200 dark:border-gray-700 my-4"></div>
-                  <Link href={`/car/${car.id}?lang=${currentLang}`}>
+                  <div>
                     {/* Details grid */}
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
                       <div className="flex items-center space-x-2">
@@ -173,26 +177,36 @@ const CarsSection: FC<CarsSectionProps> = ({
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center py-7  font-semibold justify-between">
-                      <h6 className="carPrice text-[24px] ">
+                    <div className="flex items-center py-7 font-semibold justify-between">
+                      <h6 className="carPrice text-[24px]">
                         {car.dailyPrice}₼{" "}
                         <span className="text-[16px] font-light">
                           {" "}
                           {t.perDay}
                         </span>
                       </h6>
-                      <button className="btn dark:bg-neutral-500">
-                        Book Now
-                      </button>
+                      <Button 
+                        className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          // Navigate to booking with car pre-selected
+                          window.location.href = `/booking?car=${car.id}&lang=${currentLang}`;
+                        }}
+                      >
+                        {currentLang === 'az' ? 'İndi Sifariş Et' : 
+                         currentLang === 'en' ? 'Book Now' : 
+                         currentLang === 'ru' ? 'Забронировать' : 'احجز الآن'}
+                      </Button>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               </Card>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+            </Link>
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 

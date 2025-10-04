@@ -5,6 +5,9 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useTranslation } from '@/lib/translations';
 import { Car, Users, Award, MapPin } from 'lucide-react';
+import GoogleReviews from '@/components/GoogleReviews';
+import { CertificatesCarousel } from '@/components/CertificatesCarousel';
+import { certificates } from '@/lib/data';
 
 export default function AboutPage() {
   const [currentLang, setCurrentLang] = useState('az');
@@ -174,8 +177,36 @@ export default function AboutPage() {
               </p>
             </div>
           </div>
+
+          {/* Certificates Section */}
+          <div className="bg-white dark:bg-brand-dark/70 rounded-2xl shadow-xl p-8 mb-16">
+            <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+              {currentLang === 'az' ? 'Sertifikatlarımız və Lisenziyalarımız' :
+               currentLang === 'en' ? 'Our Certificates and Licenses' :
+               currentLang === 'ru' ? 'Наши сертификаты и лицензии' : 'شهاداتنا وتراخيصنا'}
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 text-center max-w-3xl mx-auto mb-8">
+              {currentLang === 'az' ? 'Peşəkarlığımızı və keyfiyyətimizi təsdiq edən rəsmi sənədlər' :
+               currentLang === 'en' ? 'Official documents confirming our professionalism and quality' :
+               currentLang === 'ru' ? 'Официальные документы, подтверждающие наш профессионализм и качество' : 'الوثائق الرسمية التي تؤكد احترافيتنا وجودتنا'}
+            </p>
+            <CertificatesCarousel
+              certificates={certificates}
+              autoPlay={false}
+              showDots={true}
+              currentLang={currentLang}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Customer Reviews */}
+      <GoogleReviews
+        maxReviews={4}
+        showRating={true}
+        currentLang={currentLang}
+        className="bg-white dark:bg-brand-dark/70"
+      />
       
       <Footer t={t} />
     </div>

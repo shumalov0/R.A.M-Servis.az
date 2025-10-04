@@ -1,37 +1,38 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { 
-  Car as CarIcon, Users, Fuel, Settings, Calendar, MapPin, Phone, MessageCircle, 
-  CreditCard, ArrowLeft, CheckCircle, AlertCircle, Star, ChevronLeft, ChevronRight
+  Users, Fuel, Settings, Calendar, CheckCircle, AlertCircle, Star
 } from 'lucide-react';
 import { Car } from '@/lib/data';
 import { useTranslation } from '@/lib/translations';
 import CarDetailClient from '@/components/CarDetailClient';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
-import ThemeToggle from '@/components/ThemeToggle';
-import MobileMenu from '@/components/MobileMenu';
-import OnlineBookingForm from '@/components/OnlineBookingForm';
 import { useFavorites } from '@/hooks/use-favorites';
-import { Heart } from 'lucide-react';
 import Header from './Header';
+import { ImageGallery } from '@/components/gallery';
+import { 
+  AvailabilityStatus, 
+  SimilarCars, 
+  CustomerReviews, 
+  SocialShare, 
+  FavoriteButton 
+} from '@/components/dynamic';
+import { InlineBookingForm } from '@/components/booking';
+import { EnhancedCar, BookingFormData } from '@/lib/types';
 
 interface CarDetailPageContentProps {
   car: Car;
+  enhancedCar: EnhancedCar;
   initialLang: string;
 }
 
-export default function CarDetailPageContent({ car, initialLang }: CarDetailPageContentProps) {
+export default function CarDetailPageContent({ car, enhancedCar, initialLang }: CarDetailPageContentProps) {
   const [currentLang, setCurrentLang] = useState(initialLang);
   const [showBookingForm, setShowBookingForm] = useState(false);
   const t = useTranslation(currentLang);
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { } = useFavorites();
   const bookingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,33 +42,15 @@ export default function CarDetailPageContent({ car, initialLang }: CarDetailPage
     }
   }, []);
 
-  useEffect(() => {
-    if (showBookingForm && bookingRef.current) {
-      bookingRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      // Focus first input after scroll
-      setTimeout(() => {
-        const first = bookingRef.current?.querySelector('#firstName') as HTMLInputElement | null;
-        first?.focus({ preventScroll: true });
-      }, 500);
-    }
-  }, [showBookingForm]);
+  // Removed automatic scroll to avoid navigation blocking
+  // Users can manually scroll to the form
 
   const handleLanguageChange = (lang: string) => {
     setCurrentLang(lang);
     localStorage.setItem('ramservis_language', lang);
   };
 
-  const getLocalizedCarClass = (carClass: string) => {
-    const classMap: Record<string, Record<string, string>> = {
-      'Ekonom': { az: 'Ekonom', en: 'Economy', ru: 'Эконом', ar: 'اقتصادي' },
-      'Biznes': { az: 'Biznes', en: 'Business', ru: 'Бизнес', ar: 'أعمال' },
-      'Premium': { az: 'Premium', en: 'Premium', ru: 'Премиум', ar: 'بريميوم' },
-      'Lüks': { az: 'Lüks', en: 'Luxury', ru: 'Люкс', ar: 'فاخر' },
-      'Komfort': { az: 'Komfort', en: 'Comfort', ru: 'Комфорт', ar: 'مريح' },
-      'SUV': { az: 'SUV', en: 'SUV', ru: 'Внедорожник', ar: 'دفع رباعي' },
-    };
-    return classMap[carClass]?.[currentLang] || carClass;
-  };
+
 
   const getLocalizedFuelType = (fuelType: string) => {
     const fuelMap: Record<string, Record<string, string>> = {
@@ -97,7 +80,12 @@ export default function CarDetailPageContent({ car, initialLang }: CarDetailPage
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Car Image and Gallery */}
           <div className="space-y-6">
-            <Gallery images={car.images && car.images.length > 0 ? car.images : [car.image]} brand={car.brand} model={car.model} />
+            <ImageGallery 
+              images={enhancedCar.gallery && enhancedCar.gallery.length > 0 ? enhancedCar.gallery : [car.image]} 
+              carInfo={{ brand: car.brand, model: car.model, year: car.year }}
+              thumbnailLayout="horizontal"
+              enableLazyLoading={true}
+            />
             
             {/* Features */}
             <Card className="bg-white/80 dark:bg-brand-dark/70  backdrop-blur-sm border border-gray-200/20 dark:border-gray-700/20">
@@ -124,12 +112,30 @@ export default function CarDetailPageContent({ car, initialLang }: CarDetailPage
           <div className="space-y-8">
             {/* Car Info */}
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                {car.brand} {car.model}
-              </h1>
-              <p className="text-2xl font-semibold text-[#f5b754] dark:text-[#f5b754] mb-6">
-                ${car.dailyPrice}{t.perDay} başlayaraq
-              </p>
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                    {car.brand} {car.model}
+                  </h1>
+                  <p className="text-2xl font-semibold text-[#f5b754] dark:text-[#f5b754] mb-2">
+                    ${car.dailyPrice}{t.perDay} başlayaraq
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <SocialShare car={enhancedCar} />
+                  <FavoriteButton 
+                    carId={car.id} 
+                    carName={`${car.brand} ${car.model}`}
+                    size="lg"
+                    showLabel={false}
+                  />
+                </div>
+              </div>
+              
+              {/* Real-time Availability Status */}
+              <div className="mb-6">
+                <AvailabilityStatus carId={car.id} />
+              </div>
 
               <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="flex items-center space-x-3">
@@ -221,52 +227,66 @@ export default function CarDetailPageContent({ car, initialLang }: CarDetailPage
             <CarDetailClient 
               car={car} 
               currentLang={currentLang} 
-              onShowBookingForm={() => setShowBookingForm(true)} 
+              onShowBookingForm={() => {
+                // Prevent navigation issues by using setTimeout
+                setTimeout(() => {
+                  setShowBookingForm(true);
+                  // Smooth scroll to form after state update
+                  setTimeout(() => {
+                    bookingRef.current?.scrollIntoView({ 
+                      behavior: 'smooth', 
+                      block: 'start' 
+                    });
+                  }, 100);
+                }, 0);
+              }} 
             />
           </div>
         </div>
 
-        {/* Online Booking Form - Appears when user clicks the booking button */}
+        {/* Enhanced Inline Booking Form - Appears when user clicks the booking button */}
         {showBookingForm && (
-          <div ref={bookingRef} className="mt-16">
-            <OnlineBookingForm car={car} currentLang={currentLang} t={t} />
+          <div id="booking-form" ref={bookingRef} className="mt-16">
+            <InlineBookingForm 
+              car={enhancedCar}
+              onBookingSubmit={async (data: BookingFormData) => {
+                try {
+                  // Handle successful booking submission
+                  console.log('Booking submitted:', data);
+                  
+                  // Send WhatsApp message for online payments
+                  if (data.paymentMethod === 'online' && data.paymentLink) {
+                    const message = `Yeni online rezervasiya:\n\nMüştəri: ${data.firstName} ${data.lastName}\nEmail: ${data.email}\nTelefon: ${data.phone}\nMaşın: ${car.brand} ${car.model} (${car.year})\nTarix: ${data.pickupDate} - ${data.dropoffDate}\nÜmumi məbləğ: ${data.totalPrice} AZN\nÖdəniş linki: ${data.paymentLink}`;
+                    const whatsappUrl = `https://wa.me/+994708559001?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappUrl, '_blank');
+                  }
+                } catch (error) {
+                  console.error('Booking submission error:', error);
+                }
+              }}
+              onCancel={() => {
+                // Clean up and close form properly
+                setShowBookingForm(false);
+                // Scroll back to top of car details
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              currentLang={currentLang}
+              showPriceCalculation={true}
+            />
           </div>
         )}
+        {/* Customer Reviews Section */}
+        <div className="mt-16">
+          <CustomerReviews carId={car.id} carModel={`${car.brand} ${car.model}`} />
+        </div>
+
+        {/* Similar Cars Recommendations */}
+        <div className="mt-16">
+          <SimilarCars currentCar={enhancedCar} />
+        </div>
+
       </div>
     </div>
   );
 }
 
-function Gallery({ images, brand, model }: { images: string[]; brand: string; model: string }) {
-  const [index, setIndex] = useState(0);
-  const next = () => setIndex((i) => (i + 1) % images.length);
-  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
-
-  return (
-    <div className="space-y-4">
-      <div className="relative aspect-video overflow-hidden rounded-2xl shadow-2xl">
-        <Image
-          src={images[index]}
-          alt={`${brand} ${model}`}
-          fill
-          sizes="(max-width: 768px) 100vw, 50vw"
-          className="object-cover"
-          priority
-        />
-        <button onClick={prev} aria-label="Prev" className="absolute left-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/90 dark:bg-brand-dark/80 text-gray-800 dark:text-white shadow">
-          <ChevronLeft className="h-5 w-5" />
-        </button>
-        <button onClick={next} aria-label="Next" className="absolute right-4 top-1/2 -translate-y-1/2 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/90 dark:bg-brand-dark/80 text-gray-800 dark:text-white shadow">
-          <ChevronRight className="h-5 w-5" />
-        </button>
-      </div>
-      <div className="grid grid-cols-5 gap-2">
-        {images.map((src, i) => (
-          <button key={src} onClick={() => setIndex(i)} className={`relative aspect-video rounded-lg overflow-hidden border ${index === i ? 'border-brand-gold' : 'border-transparent'}`}>
-            <Image src={src} alt={`${brand} ${model} ${i+1}`} fill sizes="20vw" className="object-cover" />
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
