@@ -55,7 +55,7 @@ const OptimizedImage = memo(function OptimizedImage({
   if (hasError) {
     return (
       <div className={cn(
-        'flex items-center justify-center bg-gray-200 dark:bg-gray-800 text-gray-400',
+        'flex items-center justify-center bg-gray-200 dark:bg-slate-700 text-gray-400',
         className
       )}>
         <span className="text-sm">Image not available</span>
@@ -87,7 +87,7 @@ const OptimizedImage = memo(function OptimizedImage({
       {/* Loading skeleton */}
       {isLoading && (
         <div className={cn(
-          'absolute inset-0 bg-gray-200 dark:bg-gray-800 animate-pulse',
+          'absolute inset-0 bg-gray-200 dark:bg-slate-700 animate-pulse',
           'flex items-center justify-center'
         )}>
           <div className="w-8 h-8 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />

@@ -67,6 +67,14 @@ export const LazyCustomerReviews = dynamic(
   }
 );
 
+export const LazyGoogleMap = dynamic(
+  () => import('@/components/GoogleMap'),
+  {
+    loading: () => <ComponentSkeleton className="h-96" />,
+    ssr: false
+  }
+);
+
 // Removed animation components as they were deleted for better performance
 
 // Higher-order component for lazy loading with error boundary

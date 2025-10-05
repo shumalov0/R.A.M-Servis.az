@@ -16,6 +16,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 const GoogleReviews = lazy(() => import("@/components/GoogleReviews"));
 const CertificatesCarousel = lazy(() => import("@/components/CertificatesCarousel").then(module => ({ default: module.CertificatesCarousel })));
 const OtherCarsSection = lazy(() => import("@/components/OtherCarsSection"));
+const GoogleMapIframe = lazy(() => import("@/components/GoogleMapIframe"));
 
 import { certificates } from "@/lib/data";
 
@@ -115,7 +116,7 @@ export default function Home() {
           </section>
 
           {/* Categories */}
-          <section className="py-16 bg-white/70 dark:bg-brand-dark/70">
+          <section className="py-16 bg-white/70 dark:bg-[#1a1a1a]">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <CategoriesGrid />
             </div>
@@ -150,11 +151,15 @@ export default function Home() {
           {/* Customer Reviews */}
           <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
             <GoogleReviews
-              maxReviews={6}
+              maxReviews={8}
               showRating={true}
               currentLang={currentLang}
+              useGoogleAPI={false}
+              minRating={4}
             />
           </Suspense>
+
+
 
           {/* Certificates Carousel */}
           <section className="py-16 bg-white/70 dark:bg-brand-dark/70">
@@ -191,7 +196,10 @@ export default function Home() {
           </section>
         </>
       )}
-
+          {/* Location Map */}
+          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
+            <GoogleMapIframe currentLang={currentLang} />
+          </Suspense>
       {/* Footer */}
       <Footer t={t} />
     </div>

@@ -215,4 +215,125 @@ html {
   border: 1px solid #e0e0e0  ;
 }
 
+/* Mobile date input fixes */
+.date-input {
+  position: relative;
+}
+
+/* Fix for mobile date input visibility */
+.date-input::-webkit-datetime-edit {
+  color: transparent;
+}
+
+.date-input::-webkit-datetime-edit-fields-wrapper {
+  color: transparent;
+}
+
+.date-input::-webkit-datetime-edit-text {
+  color: transparent;
+}
+
+.date-input::-webkit-datetime-edit-month-field {
+  color: transparent;
+}
+
+.date-input::-webkit-datetime-edit-day-field {
+  color: transparent;
+}
+
+.date-input::-webkit-datetime-edit-year-field {
+  color: transparent;
+}
+
+.date-input::-webkit-inner-spin-button {
+  display: none;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6b7280;
+  opacity: 1;
+  width: 20px;
+  height: 20px;
+}
+
+/* When date is selected, show the value */
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit,
+.date-input:focus::-webkit-datetime-edit {
+  color: #374151;
+}
+
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit-fields-wrapper,
+.date-input:focus::-webkit-datetime-edit-fields-wrapper {
+  color: #374151;
+}
+
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit-text,
+.date-input:focus::-webkit-datetime-edit-text {
+  color: #374151;
+}
+
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit-month-field,
+.date-input:focus::-webkit-datetime-edit-month-field {
+  color: #374151;
+}
+
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit-day-field,
+.date-input:focus::-webkit-datetime-edit-day-field {
+  color: #374151;
+}
+
+.date-input:not(:placeholder-shown)::-webkit-datetime-edit-year-field,
+.date-input:focus::-webkit-datetime-edit-year-field {
+  color: #374151;
+}
+
+/* Dark mode support for date inputs */
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit,
+.dark .date-input:focus::-webkit-datetime-edit {
+  color: #f9fafb;
+}
+
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit-fields-wrapper,
+.dark .date-input:focus::-webkit-datetime-edit-fields-wrapper {
+  color: #f9fafb;
+}
+
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit-text,
+.dark .date-input:focus::-webkit-datetime-edit-text {
+  color: #f9fafb;
+}
+
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit-month-field,
+.dark .date-input:focus::-webkit-datetime-edit-month-field {
+  color: #f9fafb;
+}
+
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit-day-field,
+.dark .date-input:focus::-webkit-datetime-edit-day-field {
+  color: #f9fafb;
+}
+
+.dark .date-input:not(:placeholder-shown)::-webkit-datetime-edit-year-field,
+.dark .date-input:focus::-webkit-datetime-edit-year-field {
+  color: #f9fafb;
+}
+
+/* Mobile responsive improvements */
+@media (max-width: 768px) {
+  .date-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  .date-input::-webkit-calendar-picker-indicator {
+    right: 12px;
+    width: 24px;
+    height: 24px;
+  }
+}
+
 

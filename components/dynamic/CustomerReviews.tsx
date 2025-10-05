@@ -99,11 +99,11 @@ export default function CustomerReviews({ carId, carModel, maxReviews = 6 }: Cus
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   const getInitials = (name: string) => {
@@ -130,7 +130,7 @@ export default function CustomerReviews({ carId, carModel, maxReviews = 6 }: Cus
 
   if (processedReviews.length === 0) {
     return (
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+      <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
         <CardContent className="p-8 text-center">
           <Star className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
@@ -147,7 +147,7 @@ export default function CustomerReviews({ carId, carModel, maxReviews = 6 }: Cus
   return (
     <div className="space-y-6">
       {/* Reviews Summary */}
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+      <Card className="bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span className="text-gray-900 dark:text-white">Customer Reviews</span>
@@ -234,7 +234,7 @@ export default function CustomerReviews({ carId, carModel, maxReviews = 6 }: Cus
             : review.reviewText.substring(0, 200) + '...';
 
           return (
-            <Card key={review.id} className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <Card key={review.id} className="bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4">
                   <Avatar className="h-10 w-10">

@@ -173,7 +173,7 @@ export function AvailabilityChecker({
       return {
         icon: <Clock className="h-4 w-4" />,
         text: 'Gözləyir',
-        color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+        color: 'bg-gray-100 text-gray-800 dark:bg-[#1a1a1a] dark:text-gray-200'
       };
     }
 
@@ -304,7 +304,7 @@ export function AvailabilityChecker({
               {availabilityData.alternativeDates.slice(0, 3).map((dates, index) => (
                 <div 
                   key={index}
-                  className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                  className="flex items-center justify-between p-2 bg-gray-50 dark:bg-[#1a1a1a] rounded-lg"
                 >
                   <div className="text-sm">
                     <span className="font-medium">

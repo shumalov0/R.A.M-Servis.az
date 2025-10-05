@@ -96,7 +96,7 @@ export default function AvailabilityStatus({ carId, onAvailabilityChange }: Avai
   }
 
   return (
-    <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+    <Card className="bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-sm">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center space-x-2">
@@ -130,7 +130,7 @@ export default function AvailabilityStatus({ carId, onAvailabilityChange }: Avai
         {!availability.available && availability.nextAvailable && (
           <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
             <Clock className="h-4 w-4" />
-            <span>Next available: {availability.nextAvailable.toLocaleDateString()}</span>
+            <span>Next available: {availability.nextAvailable.toISOString().split('T')[0]}</span>
           </div>
         )}
 

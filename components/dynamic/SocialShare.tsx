@@ -126,7 +126,7 @@ export default function SocialShare({ car, currentUrl }: SocialShareProps) {
       </Button>
 
       {isOpen && (
-        <Card className="absolute top-full mt-2 right-0 z-50 w-80 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border shadow-lg">
+        <Card className="absolute top-full mt-2 right-0 z-50 w-80 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-sm border shadow-lg">
           <CardContent className="p-4">
             <div className="space-y-4">
               <div className="text-center">

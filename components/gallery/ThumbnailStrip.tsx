@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, forwardRef, useCallback } from 'react';
+import { useRef, useEffect, forwardRef, useCallback, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -24,6 +24,11 @@ export default function ThumbnailStrip({
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const activeThumbRef = useRef<HTMLButtonElement | null>(null);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  
+  // Touch handling state
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const [isDragging, setIsDragging] = useState(false);
 
   // Keyboard navigation handler
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {

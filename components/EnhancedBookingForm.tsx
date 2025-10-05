@@ -170,8 +170,16 @@ export default function EnhancedBookingForm({
     return isStepComplete(FORM_STEPS[currentStep]);
   };
 
+  // Prevent space key from triggering unwanted actions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' && e.target === e.currentTarget) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8" onKeyDown={handleKeyDown}>
       {/* Header */}
       <div className="mb-6 sm:mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">

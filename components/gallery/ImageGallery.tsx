@@ -60,7 +60,7 @@ export default function ImageGallery({
   if (!processedImages || processedImages.length === 0) {
     return (
       <div className={`space-y-4 ${className}`}>
-        <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 rounded-2xl flex items-center justify-center">
+        <div className="relative aspect-video bg-gray-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
           <div className="text-center text-gray-500 dark:text-gray-400">
             <div className="text-4xl mb-2">📷</div>
             <p className="text-sm">No images available</p>

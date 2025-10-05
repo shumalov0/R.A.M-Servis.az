@@ -1,90 +1,147 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Users, Fuel, Settings, Star } from 'lucide-react';
-import { EnhancedCar } from '@/lib/types';
-import { enhancedCars } from '@/lib/data';
-import { useFavorites } from '@/hooks/use-favorites';
-import { Heart } from 'lucide-react';
+import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { EnhancedCar } from "@/lib/types";
+import { enhancedCars } from "@/lib/data";
+import CarCard from "@/components/CarCard";
+import { translations } from "@/lib/translations";
 
 interface SimilarCarsProps {
   currentCar: EnhancedCar;
   maxRecommendations?: number;
+  currentLang?: string;
 }
 
-export default function SimilarCars({ currentCar, maxRecommendations = 4 }: SimilarCarsProps) {
+export default function SimilarCars({
+  currentCar,
+  maxRecommendations = 8,
+  currentLang = "en",
+}: SimilarCarsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const t = translations[currentLang] || translations.en;
+
+  // Localization functions
+  const getLocalizedCarClass = (carClass: string) => {
+    const classMap: { [key: string]: { [lang: string]: string } } = {
+      Economy: { az: "Ekonom", en: "Economy", ru: "Эконом", ar: "اقتصادي" },
+      Compact: { az: "Kompakt", en: "Compact", ru: "Компактный", ar: "مدمج" },
+      Standard: {
+        az: "Standart",
+        en: "Standard",
+        ru: "Стандартный",
+        ar: "قياسي",
+      },
+      Premium: { az: "Premium", en: "Premium", ru: "Премиум", ar: "بريميوم" },
+      Luxury: { az: "Lüks", en: "Luxury", ru: "Люкс", ar: "فاخر" },
+      SUV: { az: "SUV", en: "SUV", ru: "Внедорожник", ar: "دفع رباعي" },
+    };
+    return classMap[carClass]?.[currentLang] || carClass;
+  };
+
+  const getLocalizedFuelType = (fuelType: string) => {
+    const fuelMap: { [key: string]: { [lang: string]: string } } = {
+      Petrol: { az: "Benzin", en: "Petrol", ru: "Бензин", ar: "بنزين" },
+      Diesel: { az: "Dizel", en: "Diesel", ru: "Дизель", ar: "ديزل" },
+      Electric: {
+        az: "Elektrik",
+        en: "Electric",
+        ru: "Электрический",
+        ar: "كهربائي",
+      },
+      Hybrid: { az: "Hibrid", en: "Hybrid", ru: "Гибрид", ar: "هجين" },
+    };
+    return fuelMap[fuelType]?.[currentLang] || fuelType;
+  };
+
+  const getLocalizedTransmission = (transmission: string) => {
+    const transmissionMap: { [key: string]: { [lang: string]: string } } = {
+      Manual: { az: "Mexaniki", en: "Manual", ru: "Механическая", ar: "يدوي" },
+      Automatic: {
+        az: "Avtomatik",
+        en: "Automatic",
+        ru: "Автоматическая",
+        ar: "أوتوماتيكي",
+      },
+    };
+    return transmissionMap[transmission]?.[currentLang] || transmission;
+  };
 
   // Calculate similarity score based on category, price range, and features
   const similarCars = useMemo(() => {
-    const candidates = enhancedCars.filter(car => car.id !== currentCar.id);
-    
-    const scoredCars = candidates.map(car => {
+    const candidates = enhancedCars.filter((car) => car.id !== currentCar.id);
+
+    const scoredCars = candidates.map((car) => {
       let score = 0;
-      
+
       // Category match (highest weight)
       if (car.category === currentCar.category) score += 40;
-      
+
       // Price range similarity (within 30% range)
       const priceDiff = Math.abs(car.dailyPrice - currentCar.dailyPrice);
       const priceRange = currentCar.dailyPrice * 0.3;
       if (priceDiff <= priceRange) score += 25;
-      
+
       // Seat count match
       if (car.seats === currentCar.seats) score += 15;
-      
+
       // Fuel type match
       if (car.fuelType === currentCar.fuelType) score += 10;
-      
+
       // Transmission match
       if (car.transmission === currentCar.transmission) score += 5;
-      
+
       // Feature overlap
-      const commonFeatures = car.features.filter(feature => 
+      const commonFeatures = car.features.filter((feature) =>
         currentCar.features.includes(feature)
       ).length;
       score += commonFeatures * 2;
-      
+
       // Popularity boost
       score += car.popularity * 0.1;
-      
+
       return { car, score };
     });
-    
+
     return scoredCars
       .sort((a, b) => b.score - a.score)
       .slice(0, maxRecommendations)
-      .map(item => item.car);
+      .map((item) => item.car);
   }, [currentCar, maxRecommendations]);
 
+  const carsPerSlide = 3;
+  const maxSlides = Math.max(1, Math.ceil(similarCars.length / carsPerSlide));
+
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % Math.max(1, similarCars.length - 1));
+    setCurrentIndex((prev) => (prev + 1) % maxSlides);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + Math.max(1, similarCars.length - 1)) % Math.max(1, similarCars.length - 1));
+    setCurrentIndex((prev) => (prev - 1 + maxSlides) % maxSlides);
   };
 
   if (similarCars.length === 0) {
     return null;
   }
 
-  const visibleCars = similarCars.slice(currentIndex, currentIndex + 2);
+  const startIndex = currentIndex * carsPerSlide;
+  const visibleCars = similarCars.slice(startIndex, startIndex + carsPerSlide);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Similar Cars You Might Like
+          {currentLang === "az"
+            ? "Bənzər Maşınlar"
+            : currentLang === "en"
+            ? "Similar Cars You Might Like"
+            : currentLang === "ru"
+            ? "Похожие автомобили"
+            : "سيارات مماثلة قد تعجبك"}
         </h3>
-        
-        {similarCars.length > 2 && (
+
+        {similarCars.length > carsPerSlide && (
           <div className="flex space-x-2">
             <Button
               variant="outline"
@@ -99,7 +156,7 @@ export default function SimilarCars({ currentCar, maxRecommendations = 4 }: Simi
               variant="outline"
               size="sm"
               onClick={nextSlide}
-              disabled={currentIndex >= similarCars.length - 2}
+              disabled={currentIndex >= maxSlides - 1}
               className="h-8 w-8 p-0"
             >
               <ChevronRight className="h-4 w-4" />
@@ -108,105 +165,30 @@ export default function SimilarCars({ currentCar, maxRecommendations = 4 }: Simi
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {visibleCars.map((car) => (
-          <Card key={car.id} className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-            <CardContent className="p-0">
-              <div className="relative">
-                <div className="aspect-video relative overflow-hidden rounded-t-lg">
-                  <Image
-                    src={car.image}
-                    alt={`${car.brand} ${car.model}`}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 right-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        toggleFavorite(car.id);
-                      }}
-                      className="h-8 w-8 p-0 bg-white/80 hover:bg-white/90 dark:bg-gray-800/80 dark:hover:bg-gray-800/90"
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${
-                          isFavorite(car.id) 
-                            ? 'fill-red-500 text-red-500' 
-                            : 'text-gray-600 dark:text-gray-400'
-                        }`} 
-                      />
-                    </Button>
-                  </div>
-                  <div className="absolute top-3 left-3">
-                    <Badge variant="secondary" className="bg-white/90 text-gray-800">
-                      {car.category}
-                    </Badge>
-                  </div>
-                </div>
-
-                <div className="p-4 space-y-3">
-                  <div>
-                    <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {car.brand} {car.model}
-                    </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">{car.year}</p>
-                  </div>
-
-                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                    <div className="flex items-center space-x-1">
-                      <Users className="h-4 w-4" />
-                      <span>{car.seats}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Fuel className="h-4 w-4" />
-                      <span>{car.fuelType}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Settings className="h-4 w-4" />
-                      <span>{car.transmission}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                        ${car.dailyPrice}
-                      </p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">per day</p>
-                    </div>
-                    
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {(car.popularity / 20).toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <Link href={`/car/${car.id}`}>
-                    <Button className="w-full bg-amber-600 hover:bg-amber-700 text-white">
-                      View Details
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <CarCard
+            key={car.id}
+            car={car}
+            currentLang={currentLang}
+            t={t}
+            getLocalizedCarClass={getLocalizedCarClass}
+            getLocalizedFuelType={getLocalizedFuelType}
+            getLocalizedTransmission={getLocalizedTransmission}
+          />
         ))}
       </div>
 
-      {similarCars.length > 2 && (
+      {similarCars.length > carsPerSlide && (
         <div className="flex justify-center space-x-2">
-          {Array.from({ length: Math.ceil(similarCars.length / 2) }).map((_, index) => (
+          {Array.from({ length: maxSlides }).map((_, index) => (
             <button
               key={index}
-              onClick={() => setCurrentIndex(index * 2)}
+              onClick={() => setCurrentIndex(index)}
               className={`h-2 w-2 rounded-full transition-colors ${
-                Math.floor(currentIndex / 2) === index
-                  ? 'bg-amber-600'
-                  : 'bg-gray-300 dark:bg-gray-600'
+                currentIndex === index
+                  ? "bg-brand-gold"
+                  : "bg-gray-300 dark:bg-gray-600"
               }`}
             />
           ))}

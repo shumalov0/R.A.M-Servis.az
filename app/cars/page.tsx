@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Header from '@/components/Header';
+import FixedHeader from '@/components/FixedHeader';
 import Footer from '@/components/Footer';
 import { cars } from '@/lib/data';
 import { useTranslation } from '@/lib/translations';
@@ -69,11 +69,11 @@ export default function CarsPage() {
     if (cls) setCarClass(cls);
     
     // if navigated with category from dropdown, preset category filter
-    const category = params?.get('category');
-    if (category) {
+    const categories = params?.get('categories');
+    if (categories) {
       setFilters({
         ...filters,
-        category: [category]
+        category: categories.split(',')
       });
     }
   }, [params, setCarClass, setFilters, filters]);
@@ -152,14 +152,14 @@ export default function CarsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-50 to-gray-50 dark:from-zinc-800 dark:bg-brand-dark/70  transition-colors duration-300">
-      <Header currentLang={currentLang} handleLanguageChange={handleLanguageChange} t={t} />
+      <FixedHeader currentLang={currentLang} handleLanguageChange={handleLanguageChange} t={t} />
       
       {isLoading ? (
         <div className="flex justify-center items-center min-h-[60vh]">
           <LoadingSpinner size="lg" />
         </div>
       ) : (
-<div className="py-20 px-4 sm:px-6 lg:px-8">
+<div className="pt-24 pb-20 px-4 sm:px-6 lg:px-8">
   <div className="max-w-7xl mx-auto">
     {/* Page Header */}
     <div className="text-center mb-12">

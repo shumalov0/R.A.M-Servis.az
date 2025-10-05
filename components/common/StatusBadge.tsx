@@ -49,7 +49,7 @@ const StatusBadge = memo(function StatusBadge({
       default:
         return {
           variant: 'secondary' as const,
-          className: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
+          className: 'bg-gray-100 text-gray-800 dark:bg-[#1a1a1a] dark:text-gray-300',
           icon: AlertCircle
         };
     }

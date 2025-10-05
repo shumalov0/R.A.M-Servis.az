@@ -32,6 +32,14 @@ export default function RentalDetailsForm({
     onUpdate({ [field]: value });
   };
 
+  // Prevent space key from triggering unwanted actions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' && e.target === e.currentTarget) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const calculateRentalDays = () => {
     if (formData.pickupDate && formData.dropoffDate) {
       const pickup = new Date(formData.pickupDate);
@@ -72,7 +80,7 @@ export default function RentalDetailsForm({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" onKeyDown={handleKeyDown}>
       {/* Car Information */}
       {car && (
         <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
@@ -125,6 +133,11 @@ export default function RentalDetailsForm({
                 type="date"
                 value={formData.pickupDate || ''}
                 onChange={(e) => handleInputChange('pickupDate', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
                 min={getTodayDate()}
                 className={`${errors.pickupDate ? 'border-red-500' : ''} text-base`}
               />
@@ -143,6 +156,11 @@ export default function RentalDetailsForm({
                 type="date"
                 value={formData.dropoffDate || ''}
                 onChange={(e) => handleInputChange('dropoffDate', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === ' ') {
+                    e.preventDefault();
+                  }
+                }}
                 min={getMinDropoffDate()}
                 className={`${errors.dropoffDate ? 'border-red-500' : ''} text-base`}
               />

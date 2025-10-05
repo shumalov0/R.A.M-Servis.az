@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // Removed animation imports for better performance
@@ -26,6 +26,12 @@ export default function MainImageViewer({
   const [retryCount, setRetryCount] = useState(0);
   const [currentImageSrc, setCurrentImageSrc] = useState(getSafeImageSrc(images[currentIndex] || ''));
   const [isZoomed, setIsZoomed] = useState(false);
+  
+  // Touch handling refs and state
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const handlePrevious = useCallback(() => {
     const newIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
@@ -54,6 +60,55 @@ export default function MainImageViewer({
     setIsZoomed(!isZoomed);
     announceToScreenReader(isZoomed ? 'Zoom disabled' : 'Zoom enabled');
   }, [isZoomed]);
+
+  // Touch event handlers for swipe navigation
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      touchStartX.current = e.touches[0].clientX;
+      touchStartY.current = e.touches[0].clientY;
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      const deltaX = Math.abs(e.touches[0].clientX - touchStartX.current);
+      const deltaY = Math.abs(e.touches[0].clientY - touchStartY.current);
+      
+      // If horizontal movement is greater than vertical, prevent scrolling
+      if (deltaX > deltaY && deltaX > 10) {
+        e.preventDefault();
+        setIsDragging(true);
+      }
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (e.changedTouches.length === 1 && images.length > 1) {
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      const deltaX = touchEndX - touchStartX.current;
+      const deltaY = touchEndY - touchStartY.current;
+      
+      // Check if it's a horizontal swipe (more horizontal than vertical movement)
+      const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+      const swipeThreshold = 50; // Minimum distance for a swipe
+      
+      if (isHorizontalSwipe && Math.abs(deltaX) > swipeThreshold) {
+        if (deltaX > 0) {
+          // Swipe right - go to previous image
+          handlePrevious();
+        } else {
+          // Swipe left - go to next image
+          handleNext();
+        }
+      } else if (!isDragging && Math.abs(deltaX) < 10 && Math.abs(deltaY) < 10) {
+        // It's a tap, not a swipe - toggle zoom
+        toggleZoom();
+      }
+    }
+    setIsDragging(false);
+  }, [handlePrevious, handleNext, toggleZoom, isDragging, images.length]);
 
   // Enhanced keyboard navigation
   useEffect(() => {
@@ -118,7 +173,7 @@ export default function MainImageViewer({
 
   if (images.length === 0) {
     return (
-      <div className="relative aspect-video bg-gray-200 dark:bg-gray-800 rounded-2xl flex items-center justify-center">
+      <div className="relative aspect-video bg-gray-200 dark:bg-slate-700 rounded-2xl flex items-center justify-center">
         <p className="text-gray-500 dark:text-gray-400">No images available</p>
       </div>
     );
@@ -126,20 +181,24 @@ export default function MainImageViewer({
 
   return (
     <div
+      ref={containerRef}
       onKeyDown={handleKeyDown}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       onClick={(e) => {
-        // Only zoom if clicking on the main area, not on buttons
-        if (e.target === e.currentTarget || (e.target as HTMLElement).tagName === 'IMG') {
+        // Only zoom if clicking on the main area, not on buttons, and not after a drag
+        if (!isDragging && (e.target === e.currentTarget || (e.target as HTMLElement).tagName === 'IMG')) {
           toggleZoom();
         }
       }}
       tabIndex={0}
       role="img"
-      aria-label={`${carInfo.brand} ${carInfo.model} ${carInfo.year} image gallery. Currently showing image ${currentIndex + 1} of ${images.length}. Click to zoom, use arrow keys to navigate, Enter for fullscreen.`}
-      className="relative aspect-video overflow-hidden rounded-2xl shadow-2xl bg-gray-100 dark:bg-gray-800 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+      aria-label={`${carInfo.brand} ${carInfo.model} ${carInfo.year} image gallery. Currently showing image ${currentIndex + 1} of ${images.length}. Click to zoom, use arrow keys to navigate, Enter for fullscreen, or swipe left/right to navigate.`}
+      className="relative aspect-video overflow-hidden rounded-2xl shadow-2xl bg-gray-100 dark:bg-slate-700 group cursor-pointer focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 touch-pan-y"
     >
       {hasError ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 dark:bg-slate-700 text-gray-500 dark:text-gray-400">
           <div className="text-4xl mb-2">📷</div>
           <p className="text-sm">Image failed to load</p>
           <Button 
@@ -178,7 +237,7 @@ export default function MainImageViewer({
           <Button
             variant="secondary"
             size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 min-w-[44px] min-h-[44px] touch-target"
+            className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 min-w-[44px] min-h-[44px] touch-target"
             onClick={(e) => {
               e.stopPropagation();
               handlePrevious();
@@ -192,7 +251,7 @@ export default function MainImageViewer({
           <Button
             variant="secondary"
             size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 min-w-[44px] min-h-[44px] touch-target"
+            className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200 min-w-[44px] min-h-[44px] touch-target"
             onClick={(e) => {
               e.stopPropagation();
               handleNext();
@@ -210,7 +269,7 @@ export default function MainImageViewer({
         <Button
           variant="secondary"
           size="icon"
-          className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg min-w-[44px] min-h-[44px] touch-target"
+          className="bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg min-w-[44px] min-h-[44px] touch-target"
           onClick={(e) => {
             e.stopPropagation();
             toggleZoom();
@@ -225,7 +284,7 @@ export default function MainImageViewer({
         <Button
           variant="secondary"
           size="icon"
-          className="bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 shadow-lg min-w-[44px] min-h-[44px] touch-target"
+          className="bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 shadow-lg min-w-[44px] min-h-[44px] touch-target"
           onClick={(e) => {
             e.stopPropagation();
             onFullscreenOpen();
@@ -251,8 +310,15 @@ export default function MainImageViewer({
       {/* Screen reader instructions */}
       <div className="sr-only">
         Use arrow keys to navigate between images, Enter or Space to open fullscreen, Z to toggle zoom. 
-        Swipe left or right on touch devices to navigate between images.
+        Swipe left or right on touch devices to navigate between images. Tap to zoom in/out.
       </div>
+      
+      {/* Touch indicator for mobile users */}
+      {images.length > 1 && (
+        <div className="absolute bottom-4 right-4 bg-black/50 text-white px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 md:hidden">
+          Swipe ←→
+        </div>
+      )}
     </div>
   );
 }

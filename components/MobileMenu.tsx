@@ -36,7 +36,7 @@
 //         <Button
 //           variant="ghost"
 //           size="icon"
-//           className="md:hidden w-9 h-9 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+//           className="md:hidden w-9 h-9 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#1a1a1a] rounded-full"
 //           aria-label="Open menu"
 //         >
 //           <Menu className="h-5 w-5" />
@@ -44,7 +44,7 @@
 //       </SheetTrigger>
 //       <SheetContent
 //         side="right"
-//         className="w-80 max-w-[90vw] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 p-0"
+//         className="w-80 max-w-[90vw] bg-white dark:bg-[#1a1a1a] border-l border-gray-200 dark:border-[#2a2a2a] p-0"
 //       >
 //         <div className="flex flex-col h-full">
 //           <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
@@ -69,7 +69,7 @@
 //                 <li key={item.href}>
 //                   <Link
 //                     href={item.href}
-//                     className="block text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 px-4 rounded-lg hover:bg-amber-50/50 dark:hover:bg-gray-800/50"
+//                     className="block text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-colors py-3 px-4 rounded-lg hover:bg-amber-50/50 dark:hover:bg-[#1a1a1a]/50"
 //                   >
 //                     {item.label}
 //                   </Link>
@@ -140,7 +140,7 @@
 //         <Button
 //           variant="ghost"
 //           size="icon"
-//           className="md:hidden w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-200/40 dark:hover:bg-gray-800/40 rounded-full"
+//           className="md:hidden w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-200/40 dark:hover:bg-[#1a1a1a]/40 rounded-full"
 //           aria-label="Open menu"
 //         >
 //           <Menu className="h-6 w-6" />
@@ -148,7 +148,7 @@
 //       </SheetTrigger>
 //       <SheetContent
 //         side="right"
-//         className="w-80 max-w-[90vw] bg-white/70 dark:bg-gray-900/70 border-l border-gray-200/30 dark:border-gray-700/30 backdrop-blur-xl p-0 shadow-2xl"
+//         className="w-80 max-w-[90vw] bg-white/70 dark:bg-[#1a1a1a]/70 border-l border-gray-200/30 dark:border-[#2a2a2a]/30 backdrop-blur-xl p-0 shadow-2xl"
 //       >
 //         <div className="flex flex-col h-full">
 //           {/* Header */}
@@ -184,7 +184,7 @@
 //                 >
 //                   <Link
 //                     href={item.href}
-//                     className="flex items-center gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-all py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-gray-800/50 hover:scale-[1.02]"
+//                     className="flex items-center gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-all py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-[#1a1a1a]/50 hover:scale-[1.02]"
 //                   >
 //                     <item.icon className="h-5 w-5 text-amber-500" />
 //                     {item.label}
@@ -281,7 +281,7 @@ export default function MobileMenu({
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-200/40 dark:hover:bg-gray-800/40 rounded-full"
+          className="md:hidden w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-200/40 dark:hover:bg-[#1a1a1a]/40 rounded-full"
           aria-label="Open menu"
         >
           <Menu className="h-6 w-6" />
@@ -318,7 +318,7 @@ export default function MobileMenu({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="w-10 h-10 rounded-full hover:bg-gray-200/60 dark:hover:bg-gray-800/60 transition"
+                  className="w-10 h-10 rounded-full hover:bg-gray-200/60 dark:hover:bg-[#1a1a1a]/60 transition"
                   aria-label="Close menu"
                 >
                   <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
@@ -335,7 +335,7 @@ export default function MobileMenu({
                   <Link
                     href={item.href}
                     prefetch={true}
-                    className="flex items-center gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-brand-gold dark:hover:text-brand-gold transition-colors py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-gray-800/50"
+                    className="flex items-center gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-brand-gold dark:hover:text-brand-gold transition-colors py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-[#1a1a1a]/50"
                   >
                     <item.icon className="h-5 w-5 text-brand-gold" />
                     {item.label}
@@ -349,7 +349,7 @@ export default function MobileMenu({
                   {/* Cars Main Button */}
                   <button
                     onClick={() => setIsCarsExpanded(!isCarsExpanded)}
-                    className="flex items-center justify-between w-full gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-gray-800/50 hover:scale-[1.02]"
+                    className="flex items-center justify-between w-full gap-3 text-lg font-medium text-gray-700 dark:text-gray-300 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-3 px-4 rounded-xl hover:bg-amber-50/60 dark:hover:bg-slate-800/50 hover:scale-[1.02]"
                   >
                     <div className="flex items-center gap-3">
                       <Car className="h-5 w-5 text-brand-gold" />
@@ -375,7 +375,7 @@ export default function MobileMenu({
                       <Link
                         href="/cars"
                         prefetch={true}
-                        className="flex items-center gap-3 text-base font-medium text-gray-600 dark:text-gray-400 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-2 px-3 rounded-lg hover:bg-amber-50/40 dark:hover:bg-gray-800/30"
+                        className="flex items-center gap-3 text-base font-medium text-gray-600 dark:text-gray-400 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-2 px-3 rounded-lg hover:bg-amber-50/40 dark:hover:bg-slate-800/30"
                       >
                         <span className="text-sm">🚗</span>
                         Bütün Maşınlar
@@ -387,7 +387,7 @@ export default function MobileMenu({
                           key={category.id}
                           href={`/cars?category=${category.name}`}
                           prefetch={false}
-                          className="flex items-center gap-3 text-base font-medium text-gray-600 dark:text-gray-400 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-2 px-3 rounded-lg hover:bg-amber-50/40 dark:hover:bg-gray-800/30"
+                          className="flex items-center gap-3 text-base font-medium text-gray-600 dark:text-gray-400 hover:text-brand-gold dark:hover:text-brand-gold transition-all py-2 px-3 rounded-lg hover:bg-amber-50/40 dark:hover:bg-slate-800/30"
                         >
                           <span className="text-sm">{category.icon}</span>
                           <div className="flex-1">

@@ -70,12 +70,20 @@ export default function BookingSummary({
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    if (currentLang === 'az') {
+      const months = [
+        'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
+        'iyul', 'avqust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'
+      ];
+      const weekdays = ['Bazar', 'Bazar ertəsi', 'Çərşənbə axşamı', 'Çərşənbə', 'Cümə axşamı', 'Cümə', 'Şənbə'];
+      return `${weekdays[date.getDay()]}, ${day} ${months[date.getMonth()]} ${year}`;
+    }
+    
+    return `${day}/${month}/${year}`;
   };
 
   const isFormComplete = () => {
@@ -135,7 +143,7 @@ export default function BookingSummary({
                   )}%
                 </span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
+              <div className="w-full bg-gray-200 rounded-full h-2 dark:bg-slate-700">
                 <div 
                   className="bg-amber-600 h-2 rounded-full transition-all duration-300" 
                   style={{ 
@@ -407,7 +415,7 @@ export default function BookingSummary({
             <CardContent>
               <div className="space-y-2">
                 {formData.additionalServices.map((serviceId) => (
-                  <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded">
+                  <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-[#1a1a1a] rounded">
                     <span>{getServiceName(serviceId)}</span>
                     <Badge variant="secondary">
                       ${additionalServices.find(s => s.id === serviceId)?.price || 0}/gün
@@ -607,13 +615,13 @@ export default function BookingSummary({
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Götürülmə:</span>
                     <span className="font-medium">
-                      {formData.pickupDate ? new Date(formData.pickupDate).toLocaleDateString() : '-'}
+                      {formData.pickupDate ? formatDate(formData.pickupDate) : '-'}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Qaytarılma:</span>
                     <span className="font-medium">
-                      {formData.dropoffDate ? new Date(formData.dropoffDate).toLocaleDateString() : '-'}
+                      {formData.dropoffDate ? formatDate(formData.dropoffDate) : '-'}
                     </span>
                   </div>
                   <div className="flex justify-between">
@@ -638,7 +646,7 @@ export default function BookingSummary({
                   {formData.additionalServices.map((serviceId) => {
                     const service = additionalServices.find(s => s.id === serviceId);
                     return (
-                      <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-gray-800 rounded text-sm">
+                      <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-[#1a1a1a] rounded text-sm">
                         <span>{service?.name || serviceId}</span>
                         <Badge variant="secondary">
                           ${service?.price || 0}/gün
@@ -655,7 +663,7 @@ export default function BookingSummary({
               <h4 className="font-semibold text-gray-900 dark:text-white border-b pb-1">
                 Ödəniş Məlumatları
               </h4>
-              <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+              <div className="bg-gray-50 dark:bg-slate-800 p-3 rounded-lg">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Ödəniş üsulu:</span>
                   <Badge variant={formData.paymentMethod === 'online' ? 'default' : 'secondary'}>
@@ -671,7 +679,7 @@ export default function BookingSummary({
                 <h4 className="font-semibold text-gray-900 dark:text-white border-b pb-1">
                   Xüsusi İstəklər
                 </h4>
-                <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                <div className="bg-gray-50 dark:bg-[#1a1a1a] p-3 rounded-lg">
                   <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm">
                     {formData.specialRequests}
                   </p>

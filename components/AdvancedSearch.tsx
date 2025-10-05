@@ -105,7 +105,7 @@ export default function AdvancedSearch({
                     <button
                       key={index}
                       onClick={() => handleSearchSubmit(suggestion.text)}
-                      className="w-full text-left p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                      className="w-full text-left p-2 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] rounded-lg transition-colors"
                     >
                       <div className="font-medium text-gray-900 dark:text-white">
                         {suggestion.text}

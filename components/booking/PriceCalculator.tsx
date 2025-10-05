@@ -152,7 +152,7 @@ export function PriceCalculator({
       
       <CardContent className="space-y-4">
         {/* Car Info */}
-        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
           <div className="flex-1">
             <h4 className="font-medium text-sm">{car.brand} {car.model}</h4>
             <p className="text-xs text-gray-500">{car.year} • {car.class}</p>
@@ -174,9 +174,9 @@ export function PriceCalculator({
         {isCalculating ? (
           <div className="space-y-3" data-testid="loading-spinner">
             <div className="animate-pulse">
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-2"></div>
-              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-3/4 mb-2"></div>
+              <div className="h-4 bg-gray-200 dark:bg-slate-700 rounded w-1/2 mb-2"></div>
+              <div className="h-6 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
             </div>
           </div>
         ) : priceBreakdown ? (

@@ -3,12 +3,13 @@
 import React, { useState, useEffect, memo, useCallback, useRef } from 'react';
 import { CustomerReview } from '@/lib/types';
 import { customerReviews } from '@/lib/data';
+
 import StarRating from './StarRating';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Skeleton } from './ui/skeleton';
 import { Alert, AlertDescription } from './ui/alert';
-import { AlertCircle, CheckCircle, MessageSquare } from 'lucide-react';
+import { AlertCircle, CheckCircle, MessageSquare, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 
 interface GoogleReviewsProps {
   maxReviews?: number;
@@ -16,6 +17,8 @@ interface GoogleReviewsProps {
   autoScroll?: boolean;
   currentLang: string;
   className?: string;
+  useGoogleAPI?: boolean;
+  minRating?: number;
 }
 
 const GoogleReviews = memo(function GoogleReviews({
@@ -23,41 +26,49 @@ const GoogleReviews = memo(function GoogleReviews({
   showRating = true,
   autoScroll = true,
   currentLang = 'az',
-  className = ''
+  className = '',
+  useGoogleAPI = false,
+  minRating = 1
 }: GoogleReviewsProps) {
   const [reviews, setReviews] = useState<CustomerReview[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
   const autoTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Simulate API call with loading state
+  // Load local reviews
   useEffect(() => {
-    const fetchReviews = async () => {
+    const loadReviews = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulate loading delay for better UX
+        await new Promise(resolve => setTimeout(resolve, 800));
         
-        // Get reviews and calculate average rating
-        const allReviews = customerReviews;
-        const limitedReviews = allReviews.slice(0, maxReviews);
-        const avgRating = allReviews.reduce((sum, review) => sum + review.rating, 0) / allReviews.length;
+        // Filter reviews by rating if needed
+        const filteredReviews = customerReviews
+          .filter(review => review.rating >= minRating)
+          .slice(0, maxReviews);
         
-        setReviews(limitedReviews);
+        const avgRating = customerReviews.reduce((sum, review) => sum + review.rating, 0) / customerReviews.length;
+        
+        setReviews(filteredReviews);
         setAverageRating(avgRating);
+        setTotalReviews(customerReviews.length);
+        
       } catch (err) {
-        setError('Failed to load reviews');
+        console.error('Yorumlar yüklənərkən xəta:', err);
+        setError('Yorumlar yüklənərkən xəta baş verdi');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchReviews();
-  }, [maxReviews]);
+    loadReviews();
+  }, [maxReviews, minRating]);
 
   // Carousel auto-scroll
   useEffect(() => {
@@ -83,20 +94,21 @@ const GoogleReviews = memo(function GoogleReviews({
   // Format date based on language - memoized for performance
   const formatDate = useCallback((dateString: string) => {
     const date = new Date(dateString);
-    const options: Intl.DateTimeFormatOptions = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    };
 
-    const localeMap: Record<string, string> = {
-      az: 'az-AZ',
-      en: 'en-US',
-      ru: 'ru-RU',
-      ar: 'ar-SA'
-    };
-
-    return date.toLocaleDateString(localeMap[currentLang] || 'az-AZ', options);
+    // Use consistent formatting to prevent hydration mismatch
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    
+    if (currentLang === 'az') {
+      const months = [
+        'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
+        'iyul', 'avqust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr'
+      ];
+      return `${day} ${months[date.getMonth()]} ${year}`;
+    }
+    
+    return `${day}/${month}/${year}`;
   }, [currentLang]);
 
   // Get source badge color - memoized for performance
@@ -109,7 +121,7 @@ const GoogleReviews = memo(function GoogleReviews({
       case 'internal':
         return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
       default:
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300';
+        return 'bg-gray-100 text-gray-800 dark:bg-[#1a1a1a] dark:text-gray-300';
     }
   }, []);
 
@@ -138,7 +150,10 @@ const GoogleReviews = memo(function GoogleReviews({
       loadingError: 'Rəylər yüklənərkən xəta baş verdi',
       averageRating: 'Orta reytinq',
       totalReviews: 'rəy',
-      rented: 'icarəyə götürüb'
+      rented: 'icarəyə götürüb',
+      refresh: 'Yenilə',
+      googleReviews: 'Google Rəyləri',
+      fromGoogle: 'Google-dan'
     },
     en: {
       title: 'Customer Reviews',
@@ -149,7 +164,10 @@ const GoogleReviews = memo(function GoogleReviews({
       loadingError: 'Error loading reviews',
       averageRating: 'Average rating',
       totalReviews: 'reviews',
-      rented: 'rented'
+      rented: 'rented',
+      refresh: 'Refresh',
+      googleReviews: 'Google Reviews',
+      fromGoogle: 'From Google'
     },
     ru: {
       title: 'Отзывы Клиентов',
@@ -160,7 +178,10 @@ const GoogleReviews = memo(function GoogleReviews({
       loadingError: 'Ошибка загрузки отзывов',
       averageRating: 'Средний рейтинг',
       totalReviews: 'отзывов',
-      rented: 'арендовал'
+      rented: 'арендовал',
+      refresh: 'Обновить',
+      googleReviews: 'Отзывы Google',
+      fromGoogle: 'Из Google'
     },
     ar: {
       title: 'آراء العملاء',
@@ -171,7 +192,10 @@ const GoogleReviews = memo(function GoogleReviews({
       loadingError: 'خطأ في تحميل المراجعات',
       averageRating: 'متوسط التقييم',
       totalReviews: 'مراجعة',
-      rented: 'استأجر'
+      rented: 'استأجر',
+      refresh: 'تحديث',
+      googleReviews: 'مراجعات جوجل',
+      fromGoogle: 'من جوجل'
     }
   };
 
@@ -180,30 +204,47 @@ const GoogleReviews = memo(function GoogleReviews({
   // Loading state
   if (loading) {
     return (
-      <section className={`py-16 ${className}`}>
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <Skeleton className="h-8 w-64 mx-auto mb-4" />
-            <Skeleton className="h-4 w-96 mx-auto" />
+      <section className={`py-20 bg-white/70 dark:bg-[#1a1a1a] ${className}`}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Skeleton className="h-8 w-32 mx-auto mb-6 rounded-full" />
+            <Skeleton className="h-12 w-96 mx-auto mb-6 rounded-2xl" />
+            <div className="flex items-center justify-center gap-6 mb-12">
+              <div className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-lg">
+                <Skeleton className="h-8 w-12 rounded" />
+                <div className="flex flex-col">
+                  <Skeleton className="h-6 w-24 mb-2 rounded" />
+                  <Skeleton className="h-4 w-16 rounded" />
+                </div>
+              </div>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, index) => (
-              <Card key={index} className="h-64">
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Skeleton className="h-10 w-10 rounded-full" />
-                    <div className="flex-1">
-                      <Skeleton className="h-4 w-24 mb-2" />
-                      <Skeleton className="h-3 w-16" />
+          <div className="max-w-5xl mx-auto">
+            <Card className="bg-white/80 dark:bg-[#1a1a1a] backdrop-blur-sm border-0 shadow-xl rounded-3xl">
+              <CardContent className="p-8 sm:p-10">
+                <div className="flex justify-center mb-6">
+                  <Skeleton className="h-16 w-16 rounded-full" />
+                </div>
+                <div className="text-center mb-8">
+                  <Skeleton className="h-6 w-full mb-3 rounded" />
+                  <Skeleton className="h-6 w-4/5 mx-auto mb-3 rounded" />
+                  <Skeleton className="h-6 w-3/4 mx-auto rounded" />
+                </div>
+                <div className="flex justify-center mb-6">
+                  <Skeleton className="h-6 w-32 rounded" />
+                </div>
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-14 w-14 rounded-full" />
+                    <div>
+                      <Skeleton className="h-5 w-24 mb-2 rounded" />
+                      <Skeleton className="h-4 w-20 rounded" />
                     </div>
                   </div>
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-full mb-2" />
-                  <Skeleton className="h-4 w-3/4" />
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -213,14 +254,16 @@ const GoogleReviews = memo(function GoogleReviews({
   // Error state
   if (error) {
     return (
-      <section className={`py-16 ${className}`}>
-        <div className="container mx-auto px-4">
-          <Alert className="max-w-md mx-auto">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>
-              {t.loadingError}
-            </AlertDescription>
-          </Alert>
+      <section className={`py-20 bg-white/70 dark:bg-[#1a1a1a] ${className}`}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-md mx-auto">
+            <Alert className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 rounded-2xl p-6">
+              <AlertCircle className="h-5 w-5 text-red-500" />
+              <AlertDescription className="text-red-700 dark:text-red-300 ml-2">
+                {t.loadingError}
+              </AlertDescription>
+            </Alert>
+          </div>
         </div>
       </section>
     );
@@ -229,14 +272,16 @@ const GoogleReviews = memo(function GoogleReviews({
   // No reviews state
   if (reviews.length === 0) {
     return (
-      <section className={`py-16 ${className}`}>
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <MessageSquare className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+      <section className={`py-20 bg-white/70 dark:bg-[#1a1a1a] ${className}`}>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-md mx-auto">
+            <div className="w-20 h-20 bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <MessageSquare className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
               {t.title}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-lg text-gray-600 dark:text-gray-400">
               {t.noReviews}
             </p>
           </div>
@@ -246,101 +291,148 @@ const GoogleReviews = memo(function GoogleReviews({
   }
 
   return (
-    <section className={`py-16 bg-gray-50 dark:bg-gray-900 ${className}`}>
-      <div className="container mx-auto px-4">
+    <section className={`py-20 bg-white/70 dark:bg-[#1a1a1a] ${className}`}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-[#1a1a1a]
+          rounded-full text-gray-700 dark:text-gray-300 text-sm font-medium mb-6">
+            <MessageSquare className="w-4 h-4" />
             {t.title}
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
             {t.subtitle}
-          </p>
+          </h2>
           
           {/* Average Rating Display */}
           {showRating && (
-            <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-2 mb-2">
-                  <StarRating rating={averageRating} size="lg" showRating />
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+              <div className="flex items-center gap-3 px-6 py-4 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
+                <div className="text-3xl font-bold text-yellow-500">{averageRating.toFixed(1)}</div>
+                <div className="flex flex-col">
+                  <StarRating rating={averageRating} size="lg" showRating={false} />
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    {totalReviews} {t.totalReviews}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t.averageRating} • {customerReviews.length} {t.totalReviews}
-                </p>
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <CheckCircle className="w-4 h-4 text-green-500" />
+                <span>{t.verified} {t.totalReviews}</span>
               </div>
             </div>
           )}
         </div>
 
         {/* Reviews Carousel */}
-        <div className="relative">
-          <div className="overflow-hidden rounded-xl">
+        <div className="relative max-w-5xl mx-auto">
+          {/* Navigation Buttons */}
+          {reviews.length > 1 && (
+            <>
+              <button
+                aria-label="Previous review"
+                onClick={prev}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 bg-white dark:bg-[#1a1a1a] rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:scale-105 transition-all duration-200"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
+              <button
+                aria-label="Next review"
+                onClick={next}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 bg-white dark:bg-[#1a1a1a] rounded-full shadow-lg border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#1a1a1a] hover:scale-105 transition-all duration-200"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </>
+          )}
+
+          <div className="overflow-hidden rounded-3xl">
             <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * 100}%)`, width: `${reviews.length * 100}%` }}
+              className="flex transition-transform duration-700 ease-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
               {reviews.map((review) => (
-                <div key={review.id} className="w-full flex-shrink-0 px-0 md:px-2 lg:px-3" style={{ width: `${100 / reviews.length}%` }}>
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300">
-                    <CardContent className="p-6 h-full flex flex-col">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    {/* Avatar */}
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                      {review.customerName.charAt(0).toUpperCase()}
-                    </div>
-                    
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        {review.customerName}
-                      </h3>
-                      <div className="flex items-center gap-2">
-                        <StarRating rating={review.rating} size="sm" />
-                        {review.verified && (
-                          <Badge variant="secondary" className="text-xs">
-                            <CheckCircle className="w-3 h-3 mr-1" />
-                            {t.verified}
+                <div key={review.id} className="w-full flex-shrink-0 px-4 sm:px-8">
+                  <Card className="bg-white/80 dark:bg-[#262626] backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+                    <CardContent className="p-8 sm:p-10">
+                      {/* Quote Icon */}
+                      <div className="flex justify-center mb-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] dark:from-gray-400 dark:to-gray-600 rounded-full flex items-center justify-center">
+                          <Quote className="w-8 h-8 text-white dark:text-gray-900" />
+                        </div>
+                      </div>
+
+                      {/* Review Text */}
+                      <div className="text-center mb-8">
+                        <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium italic">
+                          `{review.reviewText}`
+                        </p>
+                      </div>
+
+                      {/* Rating */}
+                      <div className="flex justify-center mb-6">
+                        <StarRating rating={review.rating} size="lg" showRating={false} />
+                      </div>
+
+                      {/* Customer Info */}
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-14 h-14 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] dark:from-gray-400 dark:to-gray-600 rounded-full flex items-center justify-center text-white dark:text-gray-900 font-bold text-lg shadow-lg">
+                            {review.customerName.charAt(0).toUpperCase()}
+                          </div>
+                          
+                          <div className="text-center sm:text-left">
+                            <h3 className="font-bold text-gray-900 dark:text-white text-lg">
+                              {review.customerName}
+                            </h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                              {formatDate(review.date)}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          {review.verified && (
+                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 border-green-200 dark:border-green-800">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              {t.verified}
+                            </Badge>
+                          )}
+                          
+                          <Badge className={`${getSourceBadgeColor(review.source)} border-0`}>
+                            {getSourceDisplayName(review.source)}
                           </Badge>
+                        </div>
+                      </div>
+
+
+
+                      {/* Additional Info */}
+                      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400 mt-6">
+                        {review.carRented && (
+                          <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <span>{t.rented}:</span>
+                            <span className="font-medium text-gray-700 dark:text-gray-300">{review.carRented}</span>
+                          </div>
+                        )}
+                        
+                        {review.helpful && review.helpful > 0 && (
+                          <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <span>👍</span>
+                            <span>{review.helpful} {t.helpful}</span>
+                          </div>
+                        )}
+                        
+                        {review.source === 'google' && (
+                          <div className="flex items-center gap-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+                            <span>🌟</span>
+                            <span>Google</span>
+                          </div>
                         )}
                       </div>
-                    </div>
-                  </div>
-                  
-                  {/* Source Badge */}
-                  <Badge className={`text-xs ${getSourceBadgeColor(review.source)}`}>
-                    {getSourceDisplayName(review.source)}
-                  </Badge>
-                </div>
-
-                {/* Review Text */}
-                <div className="flex-1 mb-4">
-                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                    "{review.reviewText}"
-                  </p>
-                </div>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-4">
-                    {review.carRented && (
-                      <span className="flex items-center gap-1">
-                        <span>{t.rented}</span>
-                        <span className="font-medium">{review.carRented}</span>
-                      </span>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-4">
-                    {review.helpful && review.helpful > 0 && (
-                      <span className="flex items-center gap-1">
-                        <span>👍</span>
-                        <span>{review.helpful} {t.helpful}</span>
-                      </span>
-                    )}
-                    <span>{formatDate(review.date)}</span>
-                  </div>
-                </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -348,38 +440,24 @@ const GoogleReviews = memo(function GoogleReviews({
             </div>
           </div>
 
-          {/* Controls */}
+          {/* Dots Indicator */}
           {reviews.length > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <button
-                aria-label="Previous review"
-                onClick={prev}
-                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
-              >
-                ‹
-              </button>
-              <div className="flex items-center gap-2">
-                {reviews.map((_, idx) => (
-                  <button
-                    key={idx}
-                    aria-label={`Go to slide ${idx + 1}`}
-                    onClick={() => goTo(idx)}
-                    className={`h-2.5 w-2.5 rounded-full ${currentIndex === idx ? 'bg-brand-gold' : 'bg-gray-300 dark:bg-gray-600'}`}
-                  />
-                ))}
-              </div>
-              <button
-                aria-label="Next review"
-                onClick={next}
-                className="px-4 py-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200"
-              >
-                ›
-              </button>
+            <div className="flex items-center justify-center gap-3 mt-8">
+              {reviews.map((_, idx) => (
+                <button
+                  key={idx}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  onClick={() => goTo(idx)}
+                  className={`transition-all duration-300 ${
+                    currentIndex === idx 
+                      ? 'w-8 h-3 bg-gradient-to-r from-[#2a2a2a] to-[#1a1a1a] dark:from-gray-400 dark:to-gray-600 rounded-full' 
+                      : 'w-3 h-3 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400 dark:hover:bg-gray-500'
+                  }`}
+                />
+              ))}
             </div>
           )}
         </div>
-
-        {/* Hide view more in carousel mode */}
       </div>
     </section>
   );

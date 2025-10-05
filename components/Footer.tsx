@@ -66,7 +66,7 @@ const Footer: FC<FooterProps> = ({ t }) =>{
   return (
     <footer className="bg-brand-dark text-gray-300">
       {/* Top Contact Info */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-6 py-8 border-b border-gray-800">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 px-6 py-8 border-b border-[#2a2a2a]">
         <div className="flex items-center space-x-4 bg-[#1a1a1a] rounded-2xl p-4">
           <div className="bg-[#f5b754] p-3 rounded-full">
             <Phone className="text-black h-6 w-6" />
@@ -187,7 +187,7 @@ const Footer: FC<FooterProps> = ({ t }) =>{
       </div>
 
       {/* Bottom */}
-      <div className="border-t border-gray-800 py-6 px-6 max-w-7xl mx-auto flex justify-between items-center text-sm text-gray-400">
+      <div className="border-t border-[#2a2a2a] py-6 px-6 max-w-7xl mx-auto flex justify-between items-center text-sm text-gray-400">
         <p>
           ©2025 <span className="text-[#fbbf24]">webRedox.</span> All rights
           reserved.

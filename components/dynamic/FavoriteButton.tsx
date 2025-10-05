@@ -96,7 +96,7 @@ export default function FavoriteButton({
       className={`${sizeClasses[size]} ${className} ${
         favorite 
           ? 'bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30' 
-          : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+          : 'hover:bg-gray-100 dark:hover:bg-[#1a1a1a]'
       }`}
       title={favorite ? 'Remove from favorites' : 'Add to favorites'}
     >

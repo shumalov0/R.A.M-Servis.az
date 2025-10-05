@@ -146,7 +146,7 @@ export default function PriceDisplay({
 
   if (!car && !carId) {
     return (
-      <Card className={`bg-white dark:bg-gray-800 ${className}`}>
+      <Card className={`bg-white dark:bg-[#1a1a1a] ${className}`}>
         <CardContent className="p-6">
           <div className="text-center text-gray-500 dark:text-gray-400">
             <Calculator className="h-12 w-12 mx-auto mb-4 opacity-50" />
@@ -158,7 +158,7 @@ export default function PriceDisplay({
   }
 
   return (
-    <Card className={`bg-white dark:bg-gray-800 shadow-lg ${className}`}>
+    <Card className={`bg-white dark:bg-[#1a1a1a] shadow-lg ${className}`}>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
@@ -273,7 +273,7 @@ export default function PriceDisplay({
         {priceBreakdown && isValidRentalPeriod ? (
           <div className="space-y-4">
             {/* Quick Summary */}
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+            <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-600 dark:text-gray-300">
                   <Calendar className="h-4 w-4 inline mr-1" />

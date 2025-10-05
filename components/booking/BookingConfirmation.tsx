@@ -98,7 +98,7 @@ export function BookingConfirmation({
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Car Information */}
-          <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-[#1a1a1a] rounded-lg">
             <div className="flex-1">
               <h3 className="font-semibold text-lg">
                 {car.brand} {car.model}
@@ -192,7 +192,7 @@ export function BookingConfirmation({
             <>
               <div>
                 <h4 className="font-medium mb-2">Xüsusi İstəklər</h4>
-                <p className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded-lg">
+                <p className="text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-[#1a1a1a] p-3 rounded-lg">
                   {bookingData.specialRequests}
                 </p>
               </div>

@@ -7,7 +7,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import {
   Calendar,
-  MapPin,
   CreditCard,
   CheckCircle,
   AlertCircle,
@@ -18,11 +17,7 @@ import { EnhancedCar, BookingFormData } from "@/lib/types";
 import { useBookingSummary } from "@/hooks/use-booking-summary";
 import { AvailabilityChecker } from "./AvailabilityChecker";
 import { PriceCalculator } from "./PriceCalculator";
-import {
-  sendEnhancedBookingEmails,
-  generateConfirmationNumber,
-  EnhancedEmailPayload,
-} from "@/lib/email";
+import { handleBookingSubmission } from "@/lib/booking-handler";
 import PersonalInfoForm from "@/components/forms/PersonalInfoForm";
 import RentalDetailsForm from "@/components/forms/RentalDetailsForm";
 import ServicesPaymentForm from "@/components/forms/ServicesPaymentForm";
@@ -79,6 +74,8 @@ export default function InlineBookingForm({
     updateFormData(initialFormData);
   }, [car.id, initialData, updateFormData]);
 
+  // Removed ESC key handler to prevent navigation interference
+
   // Cleanup effect to prevent memory leaks
   useEffect(() => {
     return () => {
@@ -115,63 +112,32 @@ export default function InlineBookingForm({
     setSubmitError(null);
 
     try {
-      // Generate confirmation number
-      const confirmationNumber = generateConfirmationNumber();
-
-      // Prepare enhanced email payload
-      const emailPayload: EnhancedEmailPayload = {
-        customerEmail: formData.email,
-        customerName: `${formData.firstName} ${formData.lastName}`,
-        businessEmail: "info@ramservis.az",
-        bookingData: formData,
-        carDetails: {
-          brand: car.brand,
-          model: car.model,
-          year: car.year,
-          image: car.image,
-          dailyPrice: car.dailyPrice,
-        },
-        confirmationNumber,
-        language: currentLang,
+      // Use the new booking handler
+      const carDetails = {
+        id: car.id,
+        brand: car.brand,
+        model: car.model,
+        year: car.year,
+        image: car.image,
+        dailyPrice: car.dailyPrice,
       };
 
-      // Send booking emails
-      const emailResults = await sendEnhancedBookingEmails(emailPayload);
-
-      // Log email results
-      if (!emailResults.toCustomer.success) {
-        console.warn("Customer email failed:", emailResults.toCustomer.error);
-      }
-      if (!emailResults.toBusiness.success) {
-        console.warn("Business email failed:", emailResults.toBusiness.error);
-      }
-
-      // Save booking to localStorage for tracking
-      const existingBookings = JSON.parse(
-        localStorage.getItem("ramservis_bookings") || "[]"
+      const result = await handleBookingSubmission(
+        formData,
+        carDetails,
+        currentLang as 'az' | 'en' | 'ru'
       );
-      const newBooking = {
-        ...formData,
-        id: confirmationNumber,
-        carDetails: emailPayload.carDetails,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        emailSent: {
-          customer: emailResults.toCustomer.success,
-          business: emailResults.toBusiness.success,
-        },
-      };
-      existingBookings.push(newBooking);
-      localStorage.setItem(
-        "ramservis_bookings",
-        JSON.stringify(existingBookings)
-      );
+
+      if (!result.success) {
+        throw new Error(result.error || 'Rezervasiya zamanı xəta baş verdi');
+      }
+
+      console.log('✅ Rezervasiya uğurla yaradıldı:', result.confirmationNumber);
 
       // Call the original onBookingSubmit handler
       await onBookingSubmit({
         ...formData,
-        confirmationNumber,
-        paymentLink: emailResults.paymentLink,
+        confirmationNumber: result.confirmationNumber,
       });
 
       setShowConfirmation(true);
@@ -213,7 +179,7 @@ export default function InlineBookingForm({
             </p>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6">
+          <div className="bg-gray-50 dark:bg-[#1a1a1a] rounded-lg p-4 mb-6">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">
                 Avtomobil:
@@ -226,14 +192,12 @@ export default function InlineBookingForm({
               <div className="flex items-center justify-between text-sm mt-2">
                 <span className="text-gray-600 dark:text-gray-400">Tarix:</span>
                 <span className="font-medium">
-                  {new Date(
-                    summaryState.formData.pickupDate
-                  ).toLocaleDateString()}{" "}
+                  {summaryState.formData.pickupDate ? 
+                    new Date(summaryState.formData.pickupDate).toISOString().split('T')[0] : ''
+                  }{" "}
                   -{" "}
                   {summaryState.formData.dropoffDate &&
-                    new Date(
-                      summaryState.formData.dropoffDate
-                    ).toLocaleDateString()}
+                    new Date(summaryState.formData.dropoffDate).toISOString().split('T')[0]}
                 </span>
               </div>
             )}
@@ -258,7 +222,13 @@ export default function InlineBookingForm({
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div
+      className="max-w-4xl mx-auto space-y-6"
+      onClick={(e) => {
+        // Prevent event bubbling that might interfere with navigation
+        e.stopPropagation();
+      }}
+    >
       {/* Header */}
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
@@ -408,7 +378,7 @@ export default function InlineBookingForm({
         {/* Price Calculator Sidebar */}
         {showPriceCalculation && (
           <div className="lg:col-span-1">
-            <div className="sticky top-6">
+            <div className="sticky top-24">
               <PriceCalculator
                 car={car}
                 bookingData={summaryState.formData}

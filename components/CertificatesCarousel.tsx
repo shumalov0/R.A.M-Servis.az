@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
+import { useSafeDate } from '@/hooks/use-hydration';
 import Image from 'next/image';
 import { Certificate } from '@/lib/types';
 import {
@@ -39,6 +40,7 @@ export function CertificatesCarousel({
 }: CertificatesCarouselProps) {
   const [selectedCertificate, setSelectedCertificate] = useState<Certificate | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { formatDate } = useSafeDate();
 
   const handleCertificateClick = useCallback((certificate: Certificate) => {
     setSelectedCertificate(certificate);
@@ -50,14 +52,7 @@ export function CertificatesCarousel({
     setSelectedCertificate(null);
   }, []);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(currentLang === 'az' ? 'az-AZ' : 'en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
+
 
   const isValidUntil = (certificate: Certificate) => {
     if (!certificate.validUntil) return true;
@@ -129,7 +124,7 @@ export function CertificatesCarousel({
                       
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="w-3 h-3" />
-                        <span>{formatDate(certificate.issueDate)}</span>
+                        <span>{formatDate(certificate.issueDate, currentLang)}</span>
                       </div>
                     </div>
                   </CardContent>
@@ -191,7 +186,7 @@ export function CertificatesCarousel({
                           {currentLang === 'az' ? 'Verilmə tarixi' : 'Issue Date'}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {formatDate(selectedCertificate.issueDate)}
+                          {formatDate(selectedCertificate.issueDate, currentLang)}
                         </p>
                       </div>
                     </div>
@@ -206,7 +201,7 @@ export function CertificatesCarousel({
                             {currentLang === 'az' ? 'Etibarlılıq müddəti' : 'Valid Until'}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {formatDate(selectedCertificate.validUntil)}
+                            {formatDate(selectedCertificate.validUntil, currentLang)}
                           </p>
                         </div>
                       </div>

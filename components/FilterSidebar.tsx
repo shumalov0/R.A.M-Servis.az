@@ -75,11 +75,18 @@ export default function FilterSidebar({
       <div className="lg:hidden">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="outline" className="w-full mb-6">
-              <SlidersHorizontal className="h-4 w-4 mr-2" />
-              Filtrlər
+            <Button 
+              variant="outline" 
+              size="icon"
+              className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full p-0 shadow-lg border-2 border-brand-gold/20 bg-white/90 dark:bg-brand-dark/90 backdrop-blur-sm hover:bg-brand-gold/10 hover:border-brand-gold/40 transition-all duration-200 hover:scale-105"
+              aria-label="Filtrləri aç"
+            >
+              <SlidersHorizontal className="h-5 w-5 text-brand-gold" />
               {activeFiltersCount > 0 && (
-                <Badge variant="secondary" className="ml-2 bg-brand-gold/20 text-brand-gold">
+                <Badge 
+                  variant="secondary" 
+                  className="absolute -top-2 -right-2 w-6 h-6 rounded-full p-0 flex items-center justify-center bg-brand-gold text-white text-xs font-bold"
+                >
                   {activeFiltersCount}
                 </Badge>
               )}

@@ -58,6 +58,14 @@ export default function ServicesPaymentForm({
     onUpdate({ specialRequests: value });
   };
 
+  // Prevent space key from triggering unwanted actions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' && e.target === e.currentTarget) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   const getServiceName = (serviceName: string): string => {
     const serviceMap: Record<string, Record<string, string>> = {
       'Şəxsi Sürücü': { az: 'Şəxsi Sürücü', en: 'Personal Driver', ru: 'Личный Водитель' },
@@ -79,7 +87,7 @@ export default function ServicesPaymentForm({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" onKeyDown={handleKeyDown}>
       {/* Additional Services */}
       <Card>
         <CardHeader>
@@ -199,6 +207,12 @@ export default function ServicesPaymentForm({
               id="specialRequests"
               value={formData.specialRequests || ''}
               onChange={(e) => handleSpecialRequestsChange(e.target.value)}
+              onKeyDown={(e) => {
+                // Allow space in textarea for normal text input
+                if (e.key === ' ' && e.target === e.currentTarget) {
+                  e.stopPropagation();
+                }
+              }}
               placeholder="Məsələn: Uşaq oturacağı, xüsusi təlimatlar və s."
               rows={4}
               maxLength={500}

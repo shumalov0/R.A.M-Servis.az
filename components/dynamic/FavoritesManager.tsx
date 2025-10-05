@@ -1,29 +1,23 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
-  Heart, 
   Trash2, 
-  Eye, 
-  Share2, 
   Filter,
   SortAsc,
   Grid3X3,
   List,
-  Calendar,
-  DollarSign
+  Heart
 } from 'lucide-react';
 import { useFavorites } from '@/hooks/use-favorites';
 import { enhancedCars } from '@/lib/data';
 import { EnhancedCar } from '@/lib/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import FavoriteButton from './FavoriteButton';
-import SocialShare from './SocialShare';
+import CarCard from '@/components/CarCard';
+import { translations } from '@/lib/translations';
+import Link from 'next/link';
+import { Card, CardContent } from '../ui/card';
 
 type ViewMode = 'grid' | 'list';
 type SortOption = 'name' | 'price-low' | 'price-high' | 'year-new' | 'year-old' | 'category';
@@ -33,17 +27,51 @@ interface FavoritesManagerProps {
   showHeader?: boolean;
   maxItems?: number;
   compact?: boolean;
+  currentLang?: string;
 }
 
 export default function FavoritesManager({ 
   showHeader = true, 
   maxItems,
-  compact = false 
+  compact = false,
+  currentLang = 'en'
 }: FavoritesManagerProps) {
   const { favoriteIds, toggleFavorite } = useFavorites();
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [filterBy, setFilterBy] = useState<FilterOption>('all');
+  const t = translations[currentLang] || translations.en;
+
+  // Localization functions
+  const getLocalizedCarClass = (carClass: string) => {
+    const classMap: { [key: string]: { [lang: string]: string } } = {
+      'Economy': { az: 'Ekonom', en: 'Economy', ru: 'Эконом', ar: 'اقتصادي' },
+      'Compact': { az: 'Kompakt', en: 'Compact', ru: 'Компактный', ar: 'مدمج' },
+      'Standard': { az: 'Standart', en: 'Standard', ru: 'Стандартный', ar: 'قياسي' },
+      'Premium': { az: 'Premium', en: 'Premium', ru: 'Премиум', ar: 'بريميوم' },
+      'Luxury': { az: 'Lüks', en: 'Luxury', ru: 'Люкс', ar: 'فاخر' },
+      'SUV': { az: 'SUV', en: 'SUV', ru: 'Внедорожник', ar: 'دفع رباعي' }
+    };
+    return classMap[carClass]?.[currentLang] || carClass;
+  };
+
+  const getLocalizedFuelType = (fuelType: string) => {
+    const fuelMap: { [key: string]: { [lang: string]: string } } = {
+      'Petrol': { az: 'Benzin', en: 'Petrol', ru: 'Бензин', ar: 'بنزين' },
+      'Diesel': { az: 'Dizel', en: 'Diesel', ru: 'Дизель', ar: 'ديزل' },
+      'Electric': { az: 'Elektrik', en: 'Electric', ru: 'Электрический', ar: 'كهربائي' },
+      'Hybrid': { az: 'Hibrid', en: 'Hybrid', ru: 'Гибрид', ar: 'هجين' }
+    };
+    return fuelMap[fuelType]?.[currentLang] || fuelType;
+  };
+
+  const getLocalizedTransmission = (transmission: string) => {
+    const transmissionMap: { [key: string]: { [lang: string]: string } } = {
+      'Manual': { az: 'Mexaniki', en: 'Manual', ru: 'Механическая', ar: 'يدوي' },
+      'Automatic': { az: 'Avtomatik', en: 'Automatic', ru: 'Автоматическая', ar: 'أوتوماتيكي' }
+    };
+    return transmissionMap[transmission]?.[currentLang] || transmission;
+  };
 
   // Get favorite cars data
   const favoriteCars = useMemo(() => {
@@ -87,7 +115,7 @@ export default function FavoritesManager({
 
   if (favoriteIds.length === 0) {
     return (
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+      <Card className="bg-white/80 dark:bg-[#1a1a1a]/80 backdrop-blur-sm">
         <CardContent className="p-8 text-center">
           <Heart className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
           <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
@@ -136,7 +164,7 @@ export default function FavoritesManager({
       )}
 
       {!compact && (
-        <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+        <div className="flex flex-wrap items-center gap-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg">
           {/* View Mode Toggle */}
           <div className="flex items-center space-x-1 border rounded-md">
             <Button
@@ -206,6 +234,11 @@ export default function FavoritesManager({
             car={car} 
             viewMode={viewMode}
             compact={compact}
+            currentLang={currentLang}
+            t={t}
+            getLocalizedCarClass={getLocalizedCarClass}
+            getLocalizedFuelType={getLocalizedFuelType}
+            getLocalizedTransmission={getLocalizedTransmission}
           />
         ))}
       </div>
@@ -227,120 +260,46 @@ interface FavoriteCarCardProps {
   car: EnhancedCar;
   viewMode: ViewMode;
   compact: boolean;
+  currentLang: string;
+  t: any;
+  getLocalizedCarClass: (carClass: string) => string;
+  getLocalizedFuelType: (fuelType: string) => string;
+  getLocalizedTransmission: (transmission: string) => string;
 }
 
-function FavoriteCarCard({ car, viewMode, compact }: FavoriteCarCardProps) {
+function FavoriteCarCard({ 
+  car, 
+  viewMode, 
+  compact, 
+  currentLang, 
+  t, 
+  getLocalizedCarClass, 
+  getLocalizedFuelType, 
+  getLocalizedTransmission 
+}: FavoriteCarCardProps) {
+  // For list view, we can keep a simplified version or also use CarCard
   if (viewMode === 'list') {
     return (
-      <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:shadow-lg transition-shadow">
-        <CardContent className="p-4">
-          <div className="flex items-center space-x-4">
-            <div className="relative w-24 h-16 flex-shrink-0">
-              <Image
-                src={car.image}
-                alt={`${car.brand} ${car.model}`}
-                fill
-                className="object-cover rounded"
-              />
-            </div>
-            
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                {car.brand} {car.model} {car.year}
-              </h3>
-              <div className="flex items-center space-x-4 mt-1">
-                <Badge variant="secondary">{car.category}</Badge>
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                  {car.seats} seats • {car.fuelType}
-                </span>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <div className="text-right">
-                <p className="text-lg font-bold text-amber-600 dark:text-amber-400">
-                  ${car.dailyPrice}
-                </p>
-                <p className="text-xs text-gray-500">per day</p>
-              </div>
-              
-              <div className="flex items-center space-x-1">
-                <Link href={`/car/${car.id}`}>
-                  <Button variant="outline" size="sm">
-                    <Eye className="h-4 w-4" />
-                  </Button>
-                </Link>
-                <SocialShare car={car} />
-                <FavoriteButton carId={car.id} size="sm" />
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      <CarCard
+        car={car}
+        currentLang={currentLang}
+        t={t}
+        getLocalizedCarClass={getLocalizedCarClass}
+        getLocalizedFuelType={getLocalizedFuelType}
+        getLocalizedTransmission={getLocalizedTransmission}
+      />
     );
   }
 
+  // For grid view, use CarCard
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-      <CardContent className="p-0">
-        <div className="relative">
-          <div className={`aspect-video relative overflow-hidden rounded-t-lg ${compact ? 'aspect-[4/3]' : ''}`}>
-            <Image
-              src={car.image}
-              alt={`${car.brand} ${car.model}`}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-            <div className="absolute top-3 right-3">
-              <FavoriteButton 
-                carId={car.id} 
-                carName={`${car.brand} ${car.model}`}
-                size="sm"
-                className="bg-white/90 hover:bg-white dark:bg-gray-800/90 dark:hover:bg-gray-800"
-              />
-            </div>
-            <div className="absolute top-3 left-3">
-              <Badge variant="secondary" className="bg-white/90 text-gray-800">
-                {car.category}
-              </Badge>
-            </div>
-          </div>
-
-          <div className="p-4 space-y-3">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {car.brand} {car.model}
-              </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">{car.year}</p>
-            </div>
-
-            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-              <span>{car.seats} seats</span>
-              <span>{car.fuelType}</span>
-              <span>{car.transmission}</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                  ${car.dailyPrice}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">per day</p>
-              </div>
-              
-              <div className="flex items-center space-x-2">
-                <SocialShare car={car} />
-                <Link href={`/car/${car.id}`}>
-                  <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white">
-                    <Eye className="h-4 w-4 mr-1" />
-                    View
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <CarCard
+      car={car}
+      currentLang={currentLang}
+      t={t}
+      getLocalizedCarClass={getLocalizedCarClass}
+      getLocalizedFuelType={getLocalizedFuelType}
+      getLocalizedTransmission={getLocalizedTransmission}
+    />
   );
 }

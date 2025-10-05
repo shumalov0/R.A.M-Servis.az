@@ -26,8 +26,16 @@ export default function PersonalInfoForm({
     onUpdate({ [field]: value });
   };
 
+  // Prevent space key from triggering unwanted actions
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === ' ' && e.target === e.currentTarget) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" onKeyDown={handleKeyDown}>
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -46,6 +54,11 @@ export default function PersonalInfoForm({
                 id="firstName"
                 value={formData.firstName || ''}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' && e.currentTarget.selectionStart === 0) {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="Adınızı daxil edin"
                 className={`${errors.firstName ? 'border-red-500' : ''} text-base`}
               />
@@ -63,6 +76,11 @@ export default function PersonalInfoForm({
                 id="lastName"
                 value={formData.lastName || ''}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === ' ' && e.currentTarget.selectionStart === 0) {
+                    e.preventDefault();
+                  }
+                }}
                 placeholder="Soyadınızı daxil edin"
                 className={`${errors.lastName ? 'border-red-500' : ''} text-base`}
               />
@@ -82,6 +100,11 @@ export default function PersonalInfoForm({
               type="email"
               value={formData.email || ''}
               onChange={(e) => handleInputChange('email', e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === ' ') {
+                  e.preventDefault();
+                }
+              }}
               placeholder="E-mail ünvanınızı daxil edin"
               className={`${errors.email ? 'border-red-500' : ''} text-base`}
             />
@@ -100,6 +123,11 @@ export default function PersonalInfoForm({
               type="tel"
               value={formData.phone || ''}
               onChange={(e) => handleInputChange('phone', e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === ' ' && e.currentTarget.selectionStart === 0) {
+                  e.preventDefault();
+                }
+              }}
               placeholder="+994 XX XXX XX XX"
               className={`${errors.phone ? 'border-red-500' : ''} text-base`}
             />

@@ -120,7 +120,7 @@ const CarsFilters = memo(function CarsFilters({
   }, [filters, onFiltersChange]);
 
   return (
-    <div className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white/80 dark:bg-brand-dark/70 backdrop-blur p-5 shadow-sm">
+    <div className="rounded-2xl border border-gray-200/60 dark:border-slate-700/60 bg-white/80 dark:bg-brand-dark/70 backdrop-blur p-5 shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-600 dark:text-gray-300" />
