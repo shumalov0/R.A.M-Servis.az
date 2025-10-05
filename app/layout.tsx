@@ -51,11 +51,11 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/icons/black.svg', media: '(prefers-color-scheme: light)' },
-      { url: '/icons/white.svg', media: '(prefers-color-scheme: dark)' }
+      { url: '/icons/logowhite.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icons/logosyellow.png', media: '(prefers-color-scheme: dark)' }
     ],
-    shortcut: '/icons/black.svg',
-    apple: '/icons/black.svg',
+    shortcut: '/icons/logowhite.png',
+    apple: '/icons/logowhite.png',
   },
   category: 'travel',
 };

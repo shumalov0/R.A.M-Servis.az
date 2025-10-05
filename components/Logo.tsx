@@ -13,8 +13,8 @@ interface LogoProps {
 
 export default function Logo({
   href = '/',
-  lightSrc = '/icons/black.svg',
-  darkSrc = '/icons/white.svg',
+  lightSrc = '/icons/logowhite.png',
+  darkSrc = '/icons/logosyellow.png',
   alt = 'Ram Servis',
   heightClass = 'h-8',
 }: LogoProps) {

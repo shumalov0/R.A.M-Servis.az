@@ -158,7 +158,7 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
 
     if (formData.paymentMethod === 'online') {
       // Send WhatsApp message for online payment
-      const message = `Yeni rezervasiya:\n\nMüştəri: ${formData.firstName} ${formData.lastName}\nMaşın: ${car.brand} ${car.model}\nTarix: ${formData.pickupDate} - ${formData.dropoffDate}\nÜmumi məbləğ: $${pricing.total}\n\nOnline ödəniş üçün kart məlumatlarını göndərin.`;
+      const message = `Yeni rezervasiya:\n\nMüştəri: ${formData.firstName} ${formData.lastName}\nMaşın: ${car.brand} ${car.model}\nTarix: ${formData.pickupDate} - ${formData.dropoffDate}\nÜmumi məbləğ: ₼${pricing.total}\n\nOnline ödəniş üçün kart məlumatlarını göndərin.`;
       const whatsappUrl = `https://wa.me/+994708559001?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
     }
@@ -291,7 +291,7 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
                             <span>{getLocalizedLocationName(location.name)}</span>
                             {location.extraCharge > 0 && (
                               <Badge variant="secondary" className="ml-2">
-                                +${location.extraCharge}
+                                +₼{location.extraCharge}
                               </Badge>
                             )}
                           </div>
@@ -313,7 +313,7 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
                             <span>{getLocalizedLocationName(location.name)}</span>
                             {location.extraCharge > 0 && (
                               <Badge variant="secondary" className="ml-2">
-                                +${location.extraCharge}
+                                +₼{location.extraCharge}
                               </Badge>
                             )}
                           </div>
@@ -344,7 +344,7 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
                       {getLocalizedServiceName(service.name)}
                     </Label>
                     <p className="text-sm text-gray-600">{getLocalizedServiceDescription(service.description)}</p>
-                    <p className="text-sm font-semibold text-brand-gold">${service.price}/{t.perDay.replace('/', '')}</p>
+                    <p className="text-sm font-semibold text-brand-gold">₼{service.price}/{t.perDay.replace('/', '')}</p>
                   </div>
                 </div>
               ))}
@@ -389,28 +389,28 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
                 </div>
                 <div className="flex justify-between">
                   <span>{t.basePrice}:</span>
-                  <span className="font-semibold">${pricing.basePrice}</span>
+                  <span className="font-semibold">₼{pricing.basePrice}</span>
                 </div>
                 {pricing.locationCharges > 0 && (
                   <div className="flex justify-between">
                     <span>{t.locationChanges}:</span>
-                    <span className="font-semibold">${pricing.locationCharges}</span>
+                    <span className="font-semibold">₼{pricing.locationCharges}</span>
                   </div>
                 )}
                 {pricing.serviceCharges > 0 && (
                   <div className="flex justify-between">
                     <span>{t.additionalServicesPrice}:</span>
-                    <span className="font-semibold">${pricing.serviceCharges}</span>
+                    <span className="font-semibold">₼{pricing.serviceCharges}</span>
                   </div>
                 )}
                 <Separator />
                 <div className="flex justify-between text-lg">
                   <span className="font-bold">{t.totalAmount}:</span>
-                  <span className="font-bold text-brand-gold">${pricing.total}</span>
+                  <span className="font-bold text-brand-gold">₼{pricing.total}</span>
                 </div>
                 <div className="flex justify-between text-red-600">
                   <span className="font-semibold">{t.deposit}:</span>
-                  <span className="font-semibold">${pricing.deposit}</span>
+                  <span className="font-semibold">₼{pricing.deposit}</span>
                 </div>
               </CardContent>
             </Card>

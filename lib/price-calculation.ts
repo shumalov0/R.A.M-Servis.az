@@ -48,10 +48,10 @@ const AZERBAIJAN_HOLIDAYS = [
 
 // Discount codes and their values
 const DISCOUNT_CODES: Record<string, { percentage: number; maxAmount: number; description: string }> = {
-  'WELCOME10': { percentage: 10, maxAmount: 50, description: 'Welcome discount 10%' },
-  'LONGTERM15': { percentage: 15, maxAmount: 200, description: 'Long term rental 15%' },
-  'REPEAT20': { percentage: 20, maxAmount: 100, description: 'Returning customer 20%' },
-  'STUDENT5': { percentage: 5, maxAmount: 25, description: 'Student discount 5%' },
+  'WELCOME10': { percentage: 10, maxAmount: 85, description: 'Xoş gəldin endirimi 10%' },
+  'LONGTERM15': { percentage: 15, maxAmount: 340, description: 'Uzunmüddətli icarə 15%' },
+  'REPEAT20': { percentage: 20, maxAmount: 170, description: 'Daimi müştəri 20%' },
+  'STUDENT5': { percentage: 5, maxAmount: 43, description: 'Tələbə endirimi 5%' },
 };
 
 // Utility functions
@@ -247,17 +247,17 @@ export const useRealTimePricing = () => {
 };
 
 // Price formatting utilities
-export const formatPrice = (amount: number, currency: string = 'USD'): string => {
-  return new Intl.NumberFormat('en-US', {
+export const formatPrice = (amount: number, currency: string = 'AZN'): string => {
+  return new Intl.NumberFormat('az-AZ', {
     style: 'currency',
     currency,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(amount);
 };
 
 export const formatPriceAZ = (amount: number): string => {
-  return `${amount.toFixed(0)} USD`;
+  return `${amount.toFixed(0)} ₼`;
 };
 
 // Price comparison utilities
@@ -333,18 +333,18 @@ export const getQuickPriceEstimate = (
 
   // Maximum price (airport pickup/dropoff, all services, weekend/holiday surcharge)
   let max = basePrice;
-  max += 50; // Location charges
+  max += 85; // Location charges
   if (includeServices) {
-    max += days * 93; // All services combined (50+10+8+25)
+    max += days * 159; // All services combined (85+17+14+43)
   }
   max += basePrice * 0.25; // Potential weekend/holiday surcharge
   max *= 1.18; // VAT
 
   // Typical price (city center pickup/dropoff, some services)
   let typical = basePrice;
-  typical += 30; // Typical location charges
+  typical += 51; // Typical location charges
   if (includeServices) {
-    typical += days * 35; // Some services
+    typical += days * 60; // Some services
   }
   typical *= 1.18; // VAT
 

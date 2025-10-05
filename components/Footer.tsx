@@ -103,7 +103,7 @@ const Footer: FC<FooterProps> = ({ t }) =>{
         {/* Left Logo */}
         <div>
           <h2 className="text-3xl font-bold text-[#fbbf24] h-[110px] ">
-             <Image src='/icons/white.svg' alt='footerimg' width={200} height={100} style={{ width: 'auto', height: 'auto' }} />
+             <Image src='/icons/logosyellow.png' alt='footerimg' width={200} height={100} style={{ width: '50%', height: 'auto' }} />
           </h2>
           <p className="mt-4 text-gray-400 text-sm">
             Rent a car imperdiet sapien porttito the bibenum ellentesue the

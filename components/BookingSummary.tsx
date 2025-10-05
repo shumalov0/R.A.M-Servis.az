@@ -280,7 +280,7 @@ export default function BookingSummary({
                   </div>
                 </div>
                 <div className="text-left sm:text-right self-start sm:self-center">
-                  <p className="text-xl sm:text-2xl font-bold text-amber-600">${car.dailyPrice}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-amber-600">₼{car.dailyPrice}</p>
                   <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t.perDay}</p>
                 </div>
               </div>
@@ -418,7 +418,7 @@ export default function BookingSummary({
                   <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-[#1a1a1a] rounded">
                     <span>{getServiceName(serviceId)}</span>
                     <Badge variant="secondary">
-                      ${additionalServices.find(s => s.id === serviceId)?.price || 0}/gün
+                      ₼{additionalServices.find(s => s.id === serviceId)?.price || 0}/gün
                     </Badge>
                   </div>
                 ))}
@@ -496,7 +496,7 @@ export default function BookingSummary({
               </div>
               {car && (
                 <div className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-                  ${car.dailyPrice}/gün × {priceBreakdown.days} gün
+                  ₼{car.dailyPrice}/gün × {priceBreakdown.days} gün
                 </div>
               )}
             </div>
@@ -505,20 +505,20 @@ export default function BookingSummary({
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>{t.basePrice}:</span>
-                <span className="font-semibold">${priceBreakdown.basePrice}</span>
+                <span className="font-semibold">₼{priceBreakdown.basePrice}</span>
               </div>
               
               {priceBreakdown.locationCharges > 0 && (
                 <div className="flex justify-between">
                   <span>{t.locationChanges}:</span>
-                  <span className="font-semibold">${priceBreakdown.locationCharges}</span>
+                  <span className="font-semibold">₼{priceBreakdown.locationCharges}</span>
                 </div>
               )}
               
               {priceBreakdown.serviceCharges > 0 && (
                 <div className="flex justify-between">
                   <span>{t.additionalServicesPrice}:</span>
-                  <span className="font-semibold">${priceBreakdown.serviceCharges}</span>
+                  <span className="font-semibold">₼{priceBreakdown.serviceCharges}</span>
                 </div>
               )}
               
@@ -534,12 +534,12 @@ export default function BookingSummary({
             <div className="space-y-2">
               <div className="flex justify-between text-lg">
                 <span className="font-bold">{t.totalAmount}:</span>
-                <span className="font-bold text-amber-600">${priceBreakdown.total}</span>
+                <span className="font-bold text-amber-600">₼{priceBreakdown.total}</span>
               </div>
               
               <div className="flex justify-between text-red-600 dark:text-red-400">
                 <span className="font-semibold">{t.deposit}:</span>
-                <span className="font-semibold">${priceBreakdown.deposit}</span>
+                <span className="font-semibold">₼{priceBreakdown.deposit}</span>
               </div>
               
               {/* Payment Amount */}
@@ -549,7 +549,7 @@ export default function BookingSummary({
                     {formData.paymentMethod === 'online' ? 'Onlayn ödəniş:' : 'Nağd ödəniş:'}
                   </span>
                   <span className="text-green-900 dark:text-green-100 font-bold text-lg">
-                    ${priceBreakdown.total - priceBreakdown.deposit}
+                    ₼{priceBreakdown.total - priceBreakdown.deposit}
                   </span>
                 </div>
                 <div className="text-xs text-green-700 dark:text-green-300 mt-1">
@@ -649,7 +649,7 @@ export default function BookingSummary({
                       <div key={serviceId} className="flex items-center justify-between p-2 bg-gray-50 dark:bg-[#1a1a1a] rounded text-sm">
                         <span>{service?.name || serviceId}</span>
                         <Badge variant="secondary">
-                          ${service?.price || 0}/gün
+                          ₼{service?.price || 0}/gün
                         </Badge>
                       </div>
                     );

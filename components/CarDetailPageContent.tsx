@@ -137,7 +137,7 @@ export default function CarDetailPageContent({
                     {car.brand} {car.model}
                   </h1>
                   <p className="text-2xl font-semibold text-[#f5b754] dark:text-[#f5b754] mb-2">
-                    ${car.dailyPrice}
+                    ₼{car.dailyPrice}
                     {t.perDay} başlayaraq
                   </p>
                 </div>
@@ -218,7 +218,7 @@ export default function CarDetailPageContent({
                     {t.dailyPrice}:
                   </span>
                   <span className="font-semibold text-gray-900 dark:text-white">
-                    ${car.dailyPrice}
+                    ₼{car.dailyPrice}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -226,7 +226,7 @@ export default function CarDetailPageContent({
                     {t.weeklyPrice}:
                   </span>
                   <span className="font-semibold text-gray-900 dark:text-white">
-                    ${car.weeklyPrice}
+                    ₼{car.weeklyPrice}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
@@ -234,13 +234,13 @@ export default function CarDetailPageContent({
                     {t.monthlyPrice}:
                   </span>
                   <span className="font-semibold text-gray-900 dark:text-white">
-                    ${car.monthlyPrice}
+                    ₼{car.monthlyPrice}
                   </span>
                 </div>
                 <Separator className="bg-gray-200 dark:bg-brand-dark/70 " />
                 <div className="flex justify-between items-center text-red-600 dark:text-red-400">
                   <span>{t.deposit}:</span>
-                  <span className="font-semibold">${car.deposit}</span>
+                  <span className="font-semibold">₼{car.deposit}</span>
                 </div>
               </CardContent>
             </Card>

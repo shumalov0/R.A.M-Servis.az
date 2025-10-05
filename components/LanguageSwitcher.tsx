@@ -44,7 +44,7 @@ export default function LanguageSwitcher({ currentLang, onLanguageChange }: Lang
       <Button
         variant="ghost"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2  from-zinc-50 to-gray-50 dark:from-zinc-800 dark:bg-transparent transition-colors"
+        className="flex items-center space-x-2 px-3 py-2 bg-transparent dark:bg-transparent transition-colors"
       >
        
         <span className="text-lg">{currentLanguage.flag}</span>
@@ -53,7 +53,7 @@ export default function LanguageSwitcher({ currentLang, onLanguageChange }: Lang
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 from-zinc-50 to-gray-50 dark:from-zinc-800 dark:bg-brand-dark/70  rounded-2xl py-2 z-50 animate-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-brand-dark/70 rounded-2xl py-2 z-50 animate-in slide-in-from-top-2 duration-200 shadow-lg border border-gray-200/30 dark:border-gray-700/30">
           {languages.map((language) => (
             <button
               key={language.code}

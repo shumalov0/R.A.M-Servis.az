@@ -163,8 +163,8 @@ const Header: FC<HeaderProps> = ({ currentLang, handleLanguageChange, t }) => {
           {/* Logo */}
           <div className="flex items-center space-x-2 cursor-pointer w-[150px] md:w-[200px] ">
             <Logo
-              lightSrc="/icons/black.svg"
-              darkSrc="/icons/white.svg"
+              lightSrc="/icons/logowhite.png"
+              darkSrc="/icons/logosyellow.png"
               heightClass="h-[150px] md:h-[200px]"
             />
           </div>

@@ -291,7 +291,7 @@ export default function MobileMenu({
       {/* Menu Content */}
       <SheetContent
         side="right"
-        className="w-80 max-w-[90vw] bg-white/70 dark:bg-brand-dark/70 border-l border-gray-200/30 dark:border-gray-700/30 backdrop-blur-xl p-0 shadow-2xl [&>button:first-of-type]:hidden"
+        className="w-80 max-w-[90vw] bg-white dark:bg-brand-dark/70 border-l border-gray-200/30 dark:border-gray-700/30 backdrop-blur-xl p-0 shadow-2xl [&>button:first-of-type]:hidden"
       >
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
         <SheetDescription className="sr-only">Main navigation menu for the website</SheetDescription>
@@ -302,8 +302,8 @@ export default function MobileMenu({
               <div className="flex items-center space-x-2 cursor-pointer w-8 h-8">
                 <Logo
                   href="/"
-                  lightSrc="/icons/black.svg"
-                  darkSrc="/icons/white.svg"
+                  lightSrc="/icons/logowhite.png"
+                  darkSrc="/icons/logosyellow.png"
                   heightClass="h-[140px]"
                 />
               </div>

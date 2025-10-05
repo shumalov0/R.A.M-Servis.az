@@ -169,11 +169,11 @@ export default function PriceComparison({
   };
 
   const formatPrice = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('az-AZ', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'AZN',
       minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
