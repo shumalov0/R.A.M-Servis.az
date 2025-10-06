@@ -128,6 +128,7 @@ export const useBookingSummary = (
     pickupLocation: formData.pickupLocation,
     dropoffLocation: formData.dropoffLocation,
     additionalServices: formData.additionalServices,
+    paymentMethod: formData.paymentMethod,
     autoCalculate: true,
   });
 

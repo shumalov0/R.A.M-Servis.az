@@ -34,7 +34,7 @@ export function useCarFilters(
     const urlFilters: CarFilters = {};
     
     // Parse categories from URL
-    const categories = searchParams.get('categories');
+    const categories = searchParams.get('categories') || searchParams.get('category');
     if (categories) {
       urlFilters.category = categories.split(',');
     }
@@ -108,7 +108,7 @@ export function useCarFilters(
     if (search) params.set('search', search);
     
     // Add filter parameters
-    if (filters.category?.length) params.set('categories', filters.category.join(','));
+    if (filters.category?.length) params.set('category', filters.category.join(','));
     if (filters.fuelType?.length) params.set('fuelTypes', filters.fuelType.join(','));
     if (filters.transmission?.length) params.set('transmissions', filters.transmission.join(','));
     if (filters.features?.length) params.set('features', filters.features.join(','));

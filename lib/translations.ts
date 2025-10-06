@@ -85,6 +85,8 @@ export interface Translation {
   paymentMethod: string;
   cashPayment: string;
   onlinePayment: string;
+  cardCommission: string;
+  cardCommissionWarning: string;
   priceSummary: string;
   rentalPeriod: string;
   basePrice: string;
@@ -232,6 +234,8 @@ export const translations: Record<string, Translation> = {
     paymentMethod: 'Ödəniş Üsulu',
     cashPayment: 'Nağd Ödəniş',
     onlinePayment: 'Online Ödəniş (Kart)',
+    cardCommission: 'Kart komissiyası',
+    cardCommissionWarning: 'Kartla ödənişdə 18% ƏDV + 18% kart komissiyası tətbiq olunur',
     priceSummary: 'Qiymət Xülasəsi',
     rentalPeriod: 'Kirayə müddəti',
     basePrice: 'Əsas qiymət',
@@ -378,6 +382,8 @@ export const translations: Record<string, Translation> = {
     paymentMethod: 'Payment Method',
     cashPayment: 'Cash Payment',
     onlinePayment: 'Online Payment (Card)',
+    cardCommission: 'Card commission',
+    cardCommissionWarning: '18% VAT + 18% card commission applies for card payments',
     priceSummary: 'Price Summary',
     rentalPeriod: 'Rental period',
     basePrice: 'Base price',
@@ -524,6 +530,8 @@ export const translations: Record<string, Translation> = {
     paymentMethod: 'Способ Оплаты',
     cashPayment: 'Наличная Оплата',
     onlinePayment: 'Онлайн Оплата (Карта)',
+    cardCommission: 'Комиссия за карту',
+    cardCommissionWarning: 'При оплате картой применяется НДС 18% + комиссия за карту 18%',
     priceSummary: 'Сводка Цен',
     rentalPeriod: 'Период аренды',
     basePrice: 'Базовая цена',
@@ -670,6 +678,8 @@ export const translations: Record<string, Translation> = {
     paymentMethod: 'طريقة الدفع',
     cashPayment: 'الدفع نقداً',
     onlinePayment: 'الدفع عبر الإنترنت (بطاقة)',
+    cardCommission: 'عمولة البطاقة',
+    cardCommissionWarning: 'يتم تطبيق ضريبة القيمة المضافة 18% + عمولة البطاقة 18% عند الدفع بالبطاقة',
     priceSummary: 'ملخص الأسعار',
     rentalPeriod: 'فترة الإيجار',
     basePrice: 'السعر الأساسي',

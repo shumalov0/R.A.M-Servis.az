@@ -26,9 +26,10 @@ export default function PersonalInfoForm({
     onUpdate({ [field]: value });
   };
 
-  // Prevent space key from triggering unwanted actions
+  // Prevent space key from triggering unwanted actions on container
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === ' ' && e.target === e.currentTarget) {
+    // Only prevent space if it's on the container div itself, not on input elements
+    if (e.key === ' ' && e.target === e.currentTarget && e.currentTarget.tagName === 'DIV') {
       e.preventDefault();
       e.stopPropagation();
     }

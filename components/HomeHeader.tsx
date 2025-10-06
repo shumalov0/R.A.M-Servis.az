@@ -46,11 +46,14 @@ const HomeHeader: FC<HomeHeaderProps> = ({ currentLang, handleLanguageChange, t 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-2 cursor-pointer w-[150px] md:w-[200px] ">
+          <div className="flex items-center space-x-2 cursor-pointer w-[150px]">
             <Logo
               lightSrc="/icons/logowhite.png"
               darkSrc="/icons/logosyellow.png"
-              heightClass="h-[150px] md:h-[200px]"
+              lightHeightClass="h-[150px]"
+              darkHeightClass="h-[150px]"
+              lightWidthClass="w-[150px]"
+              darkWidthClass="w-[150px]"
             />
           </div>
 

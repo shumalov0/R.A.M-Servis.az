@@ -110,32 +110,24 @@ export default function MainImageViewer({
     setIsDragging(false);
   }, [handlePrevious, handleNext, toggleZoom, isDragging, images.length]);
 
-  // Enhanced keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        handlePrevious();
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault();
-        handleNext();
-      } else if (event.key === 'Enter' || event.key === ' ') {
-        event.preventDefault();
-        onFullscreenOpen();
-      } else if (event.key === 'z' || event.key === 'Z') {
-        event.preventDefault();
-        toggleZoom();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+  // Enhanced keyboard navigation - only when component is focused
+  const handleContainerKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      handlePrevious();
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      handleNext();
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onFullscreenOpen();
+    } else if (event.key === 'z' || event.key === 'Z') {
+      event.preventDefault();
+      toggleZoom();
+    }
   }, [handlePrevious, handleNext, onFullscreenOpen, toggleZoom]);
 
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    // Prevent default to avoid double handling
-    event.preventDefault();
-  }, []);
+
 
   const handleImageLoad = () => {
     setHasError(false);
@@ -182,7 +174,7 @@ export default function MainImageViewer({
   return (
     <div
       ref={containerRef}
-      onKeyDown={handleKeyDown}
+      onKeyDown={handleContainerKeyDown}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}

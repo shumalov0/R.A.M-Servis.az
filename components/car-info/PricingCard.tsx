@@ -57,7 +57,9 @@ export function PricingCard({
     const dailyEquivalent = duration === 'weekly' 
       ? car.dailyPrice * 7 
       : car.dailyPrice * 30;
-    const actualPrice = getPriceByDuration(duration);
+    const actualPrice = duration === 'weekly'
+      ? car.weeklyPrice * 7  // Weekly price is per day, so multiply by 7
+      : car.monthlyPrice * 30; // Monthly price is per day, so multiply by 30
     return dailyEquivalent - actualPrice;
   };
 
@@ -157,9 +159,11 @@ export function PricingCard({
 
             {selectedDuration !== 'daily' && (
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Günlük orta qiymət</span>
+                <span className="text-muted-foreground">
+                  {selectedDuration === 'weekly' ? 'Həftəlik toplam' : 'Aylıq toplam'}
+                </span>
                 <span className="font-medium">
-                  ₼{Math.round(currentPrice / (selectedDuration === 'weekly' ? 7 : 30))}
+                  ₼{selectedDuration === 'weekly' ? currentPrice * 7 : currentPrice * 30}
                 </span>
               </div>
             )}

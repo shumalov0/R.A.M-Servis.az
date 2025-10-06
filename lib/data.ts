@@ -166,7 +166,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "BMW",
     model: "X5",
     year: 2023,
-    class: "Premium",
+    class: "SUV",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "3.0L",
@@ -250,7 +250,7 @@ export const enhancedCars: EnhancedCar[] = [
       licenseRequired: true,
     },
     // New enhanced fields
-    category: "Sedan",
+    category: "Ekonom",
     popularity: 95,
     availability: true,
     gallery: [
@@ -278,7 +278,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Mercedes",
     model: "E220 Cabrio",
     year: 2019,
-    class: "Luks",
+    class: "Sedan",
     fuelType: "Dizel",
     transmission: "Avtomat",
     engineSize: "2.2L TDI",
@@ -309,7 +309,7 @@ export const enhancedCars: EnhancedCar[] = [
       licenseRequired: true,
     },
     // New enhanced fields
-    category: "Sedan",
+    category: "Lüks",
     popularity: 78,
     availability: true,
     gallery: [
@@ -333,7 +333,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Kia",
     model: "Rio",
     year: 2022,
-    class: "Sedan",
+    class: "Ekonom",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "1.6L",
@@ -389,7 +389,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "BYD",
     model: "Qin Plus",
     year: 2025,
-    class: "Sedan",
+    class: "Ekonom",
     fuelType: "Hibrid",
     transmission: "Avtomat",
     engineSize: "1.5L",
@@ -451,7 +451,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Volkswagen",
     model: "Polo",
     year: 2022,
-    class: "Sedan",
+    class: "Ekonom",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "1.6L",
@@ -509,7 +509,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Toyota",
     model: "RAV4",
     year: 2024,
-    class: "Offroader",
+    class: "SUV",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "2.5L",
@@ -567,7 +567,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Toyota",
     model: "Corolla Cross",
     year: 2025,
-    class: "Offroader",
+    class: "SUV",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "2.0L",
@@ -623,7 +623,7 @@ export const enhancedCars: EnhancedCar[] = [
     brand: "Hyundai",
     model: "Accent",
     year: 2018,
-    class: "ekonom",
+    class: "Ekonom",
     fuelType: "Benzin",
     transmission: "Avtomat",
     engineSize: "1.6L",
@@ -654,7 +654,7 @@ export const enhancedCars: EnhancedCar[] = [
       licenseRequired: true,
     },
     // New enhanced fields
-    category: "Sedan",
+    category: "Ekonom",
     popularity: 82,
     availability: true,
     gallery: [
@@ -697,27 +697,27 @@ export const locations: Location[] = [
 
 export const additionalServices: AdditionalService[] = [
   {
-    id: "driver",
+    id: "Driver",
     name: "Şəxsi Sürücü",
-    price: 85,
+    price: 30,
     description: "Təcrübəli sürücü ilə rahat səyahət",
   },
   {
     id: "child-seat",
     name: "Uşaq Oturacağı",
-    price: 17,
+    price: 10,
     description: "0-12 yaş arası uşaqlar üçün təhlükəsiz oturacaq",
   },
   {
     id: "gps",
     name: "GPS Naviqasiya",
-    price: 14,
+    price: 10,
     description: "Peşəkar GPS cihazı",
   },
   {
     id: "insurance",
     name: "Tam Sığorta",
-    price: 43,
+    price: 20,
     description: "Genişləndirilmiş sığorta təminatı",
   },
 ];
@@ -1089,8 +1089,7 @@ export const certificates: Certificate[] = [
   {
     id: "1",
     title: "ISO 9001:2015 Keyfiyyət İdarəetmə Sistemi",
-    image:
-      "https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/certificates/img1.jpg",
     description: "Beynəlxalq keyfiyyət standartlarına uyğunluq sertifikatı",
     issueDate: "2023-06-15",
     validUntil: "2026-06-15",
@@ -1100,8 +1099,7 @@ export const certificates: Certificate[] = [
   {
     id: "2",
     title: "Avtomobil İcarəsi Lisenziyası",
-    image:
-      "https://images.pexels.com/photos/5668473/pexels-photo-5668473.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/certificates/img2.jpg",
     description:
       "Azərbaycan Respublikası Nəqliyyat Nazirliyi tərəfindən verilmiş rəsmi lisenziya",
     issueDate: "2023-01-10",
@@ -1112,8 +1110,7 @@ export const certificates: Certificate[] = [
   {
     id: "3",
     title: "Sığorta Sertifikatı",
-    image:
-      "https://images.pexels.com/photos/4386321/pexels-photo-4386321.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/certificates/img3.jpg",
     description: "Tam sığorta təminatı sertifikatı",
     issueDate: "2024-01-01",
     validUntil: "2024-12-31",
@@ -1123,8 +1120,7 @@ export const certificates: Certificate[] = [
   {
     id: "4",
     title: "Müştəri Məmnuniyyəti Mükafatı",
-    image:
-      "https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/certificates/img4.jpg",
     description: "2023-cü il üçün ən yaxşı müştəri xidməti mükafatı",
     issueDate: "2023-12-01",
     issuer: "Azərbaycan Turizm Assosiasiyası",
@@ -1133,8 +1129,77 @@ export const certificates: Certificate[] = [
   {
     id: "5",
     title: "Ekoloji Sertifikat",
-    image:
-      "https://images.pexels.com/photos/9324302/pexels-photo-9324302.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image: "/certificates/img5.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "6",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img6.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "7",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img7.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "8",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img8.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "9",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img9.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "10",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img10.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "11",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img11.jpg",
+    description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
+    issueDate: "2023-09-20",
+    validUntil: "2025-09-20",
+    issuer: "Ekoloji Sertifikatlaşdırma Mərkəzi",
+    credentialId: "ECO-2023-TRANS-456",
+  },
+  {
+    id: "12",
+    title: "Ekoloji Sertifikat",
+    image: "/certificates/img12.jpg",
     description: "Ətraf mühitə dost nəqliyyat xidmətləri sertifikatı",
     issueDate: "2023-09-20",
     validUntil: "2025-09-20",
@@ -1143,15 +1208,14 @@ export const certificates: Certificate[] = [
   },
 ];
 
-// Car categories for navigation dropdown
-export const carCategories: CarCategory[] = [
+// Base car categories for navigation dropdown
+const baseCategoriesData: Omit<CarCategory, "count">[] = [
   {
     id: "economy",
     name: "economy",
     displayName: "Ekonom",
     icon: "🚗",
     description: "Sərfəli və praktik seçimlər",
-    count: 2,
   },
   {
     id: "sedan",
@@ -1159,7 +1223,6 @@ export const carCategories: CarCategory[] = [
     displayName: "Sedan",
     icon: "🚙",
     description: "Rahat və geniş salon",
-    count: 0,
   },
   {
     id: "suv",
@@ -1167,7 +1230,6 @@ export const carCategories: CarCategory[] = [
     displayName: "SUV",
     icon: "🚐",
     description: "Yüksək və güclü maşınlar",
-    count: 2,
   },
   {
     id: "business",
@@ -1175,7 +1237,6 @@ export const carCategories: CarCategory[] = [
     displayName: "Biznes",
     icon: "🚘",
     description: "İş səfərləri üçün ideal",
-    count: 1,
   },
   {
     id: "luxury",
@@ -1183,7 +1244,6 @@ export const carCategories: CarCategory[] = [
     displayName: "Lüks",
     icon: "🏎️",
     description: "Premium təcrübə",
-    count: 1,
   },
   {
     id: "comfort",
@@ -1191,6 +1251,26 @@ export const carCategories: CarCategory[] = [
     displayName: "Komfort",
     icon: "🚗",
     description: "Rahat və müasir",
-    count: 0,
   },
 ];
+
+// Function to calculate category counts
+function calculateCategoryCounts(): CarCategory[] {
+  const categoryCounts: Record<string, number> = {};
+
+  // Count cars in each category
+  enhancedCars.forEach((car) => {
+    if (car.category) {
+      categoryCounts[car.category] = (categoryCounts[car.category] || 0) + 1;
+    }
+  });
+
+  // Map base categories with calculated counts
+  return baseCategoriesData.map((category) => ({
+    ...category,
+    count: categoryCounts[category.displayName] || 0,
+  }));
+}
+
+// Car categories for navigation dropdown with dynamic counts
+export const carCategories: CarCategory[] = calculateCategoryCounts();

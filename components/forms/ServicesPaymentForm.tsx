@@ -58,9 +58,10 @@ export default function ServicesPaymentForm({
     onUpdate({ specialRequests: value });
   };
 
-  // Prevent space key from triggering unwanted actions
+  // Prevent space key from triggering unwanted actions on container
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === ' ' && e.target === e.currentTarget) {
+    // Only prevent space if it's on the container div itself, not on input elements
+    if (e.key === ' ' && e.target === e.currentTarget && e.currentTarget.tagName === 'DIV') {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -122,11 +123,11 @@ export default function ServicesPaymentForm({
                   </p>
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-2">
                     <Badge variant="secondary" className="text-xs text-amber-700 bg-amber-100 dark:bg-amber-900/30 self-start">
-                      ${service.price}/{t.perDay?.replace('/', '') || 'gün'}
+                      {service.price} ₼/{t.perDay?.replace('/', '') || 'gün'}
                     </Badge>
                     {priceBreakdown && priceBreakdown.days > 0 && (
                       <span className="text-xs sm:text-sm text-gray-500">
-                        (Ümumi: ${service.price * priceBreakdown.days})
+                        (Ümumi: {service.price * priceBreakdown.days} ₼)
                       </span>
                     )}
                   </div>
@@ -166,7 +167,7 @@ export default function ServicesPaymentForm({
                   {t.cashPayment}
                 </Label>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
-                  Avtomobili götürərkən nəğd ödəniş edin
+                  Avtomobili götürərkən nəğd ödəniş edin. Depozit: {priceBreakdown ? `${priceBreakdown.deposit}₼` : 'Təyin ediləcək'}
                 </p>
               </div>
             </div>
@@ -178,8 +179,13 @@ export default function ServicesPaymentForm({
                   {t.onlinePayment}
                 </Label>
                 <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 leading-relaxed">
-                  Kart və ya bank köçürməsi ilə ödəniş
+                  Kart və ya bank köçürməsi ilə ödəniş. Depozit: {priceBreakdown ? `${priceBreakdown.deposit}₼` : 'Təyin ediləcək'}
                 </p>
+                <div className="mt-2 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-md">
+                  <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">
+                    ⚠️ Diqqət: Kartla ödənişdə 18% ƏDV tətbiq olunur
+                  </p>
+                </div>
               </div>
             </div>
           </RadioGroup>
@@ -248,28 +254,28 @@ export default function ServicesPaymentForm({
             </div>
             <div className="flex justify-between">
               <span>{t.basePrice}:</span>
-              <span className="font-semibold">${priceBreakdown.basePrice}</span>
+              <span className="font-semibold">{priceBreakdown.basePrice} ₼</span>
             </div>
             {priceBreakdown.locationCharges > 0 && (
               <div className="flex justify-between">
                 <span>{t.locationChanges}:</span>
-                <span className="font-semibold">${priceBreakdown.locationCharges}</span>
+                <span className="font-semibold">{priceBreakdown.locationCharges} ₼</span>
               </div>
             )}
             {priceBreakdown.serviceCharges > 0 && (
               <div className="flex justify-between">
                 <span>{t.additionalServicesPrice}:</span>
-                <span className="font-semibold">${priceBreakdown.serviceCharges}</span>
+                <span className="font-semibold">{priceBreakdown.serviceCharges} ₼</span>
               </div>
             )}
             <Separator />
             <div className="flex justify-between text-lg">
               <span className="font-bold">{t.totalAmount}:</span>
-              <span className="font-bold text-amber-600">${priceBreakdown.total}</span>
+              <span className="font-bold text-amber-600">{priceBreakdown.total} ₼</span>
             </div>
             <div className="flex justify-between text-red-600 dark:text-red-400">
               <span className="font-semibold">{t.deposit}:</span>
-              <span className="font-semibold">${priceBreakdown.deposit}</span>
+              <span className="font-semibold">{priceBreakdown.deposit} ₼</span>
             </div>
           </CardContent>
         </Card>

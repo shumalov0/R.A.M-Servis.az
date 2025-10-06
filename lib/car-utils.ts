@@ -34,9 +34,10 @@ export function filterCars(cars: Car[], filters: CarFilters, search: string = ''
       }
     }
 
-    // Class filter
+    // Class filter (deprecated - use category instead)
     if (filters.class && filters.class.length > 0) {
-      if (!filters.class.includes(car.class)) {
+      const enhancedCar = enhancedCars.find(ec => ec.id === car.id);
+      if (!enhancedCar || !filters.class.includes(enhancedCar.category)) {
         return false;
       }
     }
@@ -68,7 +69,13 @@ export function filterCars(cars: Car[], filters: CarFilters, search: string = ''
     // Category filter (using enhanced data)
     if (filters.category && filters.category.length > 0) {
       const enhancedCar = enhancedCars.find(ec => ec.id === car.id);
-      if (!enhancedCar || !filters.category.includes(enhancedCar.category)) {
+      if (!enhancedCar) {
+        return false;
+      }
+      
+      // Check if car's category matches any of the selected categories
+      const carCategory = enhancedCar.category;
+      if (!carCategory || !filters.category.includes(carCategory)) {
         return false;
       }
     }

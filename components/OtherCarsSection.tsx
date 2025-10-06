@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { EnhancedCar } from "@/lib/types";
 import { Translation } from "@/lib/translations";
 import LoadingSpinner from "./LoadingSpinner";
-import CarCard from "./CarCard";
+import CarsCarousel from "./CarsCarousel";
 
 interface OtherCarsSectionProps {
   cars: EnhancedCar[];
@@ -70,25 +70,27 @@ const OtherCarsSection: FC<OtherCarsSectionProps> = memo(function OtherCarsSecti
           </p>
         </div>
 
-        {/* Cars Grid */}
+        {/* Cars Carousel */}
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
             <LoadingSpinner size="lg" />
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-[22px]">
-            {filteredCars.map((car) => (
-              <CarCard
-                key={car.id}
-                car={car}
-                currentLang={currentLang}
-                t={t}
-                getLocalizedCarClass={getLocalizedCarClass}
-                getLocalizedFuelType={getLocalizedFuelType}
-                getLocalizedTransmission={getLocalizedTransmission}
-              />
-            ))}
-          </div>
+          <CarsCarousel
+            cars={filteredCars}
+            currentLang={currentLang}
+            t={t}
+            getLocalizedCarClass={getLocalizedCarClass}
+            getLocalizedFuelType={getLocalizedFuelType}
+            getLocalizedTransmission={getLocalizedTransmission}
+            autoPlay={true}
+            autoPlayInterval={4000}
+            itemsPerView={{
+              mobile: 1,
+              tablet: 2,
+              desktop: 3
+            }}
+          />
         )}
 
 

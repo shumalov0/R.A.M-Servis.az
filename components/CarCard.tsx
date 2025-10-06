@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
-import { Car } from "@/lib/data";
+import { Car, enhancedCars } from "@/lib/data";
 import { EnhancedCar } from "@/lib/types";
 import { Translation } from "@/lib/translations";
 import { useFavorites } from "@/hooks/use-favorites";
@@ -41,6 +41,16 @@ const CarCard: FC<CarCardProps> = ({
     return car.image;
   };
 
+  // Get car category from enhanced data
+  const getCarCategory = () => {
+    if ("category" in car && car.category) {
+      return car.category;
+    }
+    // Fallback to enhanced cars data
+    const enhancedCar = enhancedCars.find((ec) => ec.id === car.id);
+    return enhancedCar?.category || car.class;
+  };
+
   return (
     <Link
       href={`/car/${car.id}?lang=${currentLang}`}
@@ -66,7 +76,7 @@ const CarCard: FC<CarCardProps> = ({
               variant="secondary"
               className="bg-white text-[#dbbc42] px-[12px] py-[3px] rounded-[4px] text-[12px]"
             >
-              {getLocalizedCarClass(car.class)}
+              {getLocalizedCarClass(getCarCategory())}
             </Badge>
           </div>
         </div>

@@ -14,7 +14,11 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Lazy load heavy components to improve initial page load
 const GoogleReviews = lazy(() => import("@/components/GoogleReviews"));
-const CertificatesCarousel = lazy(() => import("@/components/CertificatesCarousel").then(module => ({ default: module.CertificatesCarousel })));
+const CertificatesCarousel = lazy(() =>
+  import("@/components/CertificatesCarousel").then((module) => ({
+    default: module.CertificatesCarousel,
+  }))
+);
 const OtherCarsSection = lazy(() => import("@/components/OtherCarsSection"));
 const GoogleMapIframe = lazy(() => import("@/components/GoogleMapIframe"));
 
@@ -122,7 +126,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Cars */}
+          {/* Most Ordered Cars */}
           <section className="py-20 dark:bg-brand-dark/70">
             <CarsSection
               cars={cars}
@@ -131,15 +135,23 @@ export default function Home() {
               getLocalizedCarClass={getLocalizedCarClass}
               getLocalizedFuelType={getLocalizedFuelType}
               getLocalizedTransmission={getLocalizedTransmission}
+              showViewAllButton={true}
+              showTitle={true}
             />
           </section>
 
           {/* Other Cars Section */}
-          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
+          <Suspense
+            fallback={
+              <div className="py-16">
+                <LoadingSpinner />
+              </div>
+            }
+          >
             <OtherCarsSection
               cars={enhancedCars}
               excludeIds={cars.slice(0, 6).map((car) => car.id)} // Exclude first 6 cars shown in main section
-              maxCars={8}
+              maxCars={12}
               currentLang={currentLang}
               t={t}
               getLocalizedCarClass={getLocalizedCarClass}
@@ -149,7 +161,13 @@ export default function Home() {
           </Suspense>
 
           {/* Customer Reviews */}
-          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
+          <Suspense
+            fallback={
+              <div className="py-16">
+                <LoadingSpinner />
+              </div>
+            }
+          >
             <GoogleReviews
               maxReviews={8}
               showRating={true}
@@ -158,8 +176,6 @@ export default function Home() {
               minRating={4}
             />
           </Suspense>
-
-
 
           {/* Certificates Carousel */}
           <section className="py-16 bg-white/70 dark:bg-brand-dark/70">
@@ -184,7 +200,13 @@ export default function Home() {
                     : "الشهادات الرسمية التي تؤكد جودتنا وموثوقيتنا"}
                 </p>
               </div>
-              <Suspense fallback={<div className="py-8"><LoadingSpinner /></div>}>
+              <Suspense
+                fallback={
+                  <div className="py-8">
+                    <LoadingSpinner />
+                  </div>
+                }
+              >
                 <CertificatesCarousel
                   certificates={certificates}
                   autoPlay={false}
@@ -196,10 +218,16 @@ export default function Home() {
           </section>
         </>
       )}
-          {/* Location Map */}
-          <Suspense fallback={<div className="py-16"><LoadingSpinner /></div>}>
-            <GoogleMapIframe currentLang={currentLang} />
-          </Suspense>
+      {/* Location Map */}
+      <Suspense
+        fallback={
+          <div className="py-16">
+            <LoadingSpinner />
+          </div>
+        }
+      >
+        <GoogleMapIframe currentLang={currentLang} />
+      </Suspense>
       {/* Footer */}
       <Footer t={t} />
     </div>

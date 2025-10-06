@@ -18,6 +18,7 @@ export interface UsePriceCalculationOptions {
   dropoffLocation?: string;
   additionalServices?: string[];
   discountCode?: string;
+  paymentMethod?: 'cash' | 'card' | 'online';
   autoCalculate?: boolean; // Whether to automatically recalculate on changes
 }
 
@@ -72,6 +73,7 @@ export const usePriceCalculation = (
     dropoffLocation = 'office',
     additionalServices = [],
     discountCode,
+    paymentMethod = 'cash',
     autoCalculate = true
   } = initialOptions;
 
@@ -124,6 +126,7 @@ export const usePriceCalculation = (
         dropoffLocation,
         additionalServices,
         discountCode,
+        paymentMethod,
         ...overrideOptions,
       };
 
@@ -152,6 +155,7 @@ export const usePriceCalculation = (
     dropoffLocation,
     additionalServices,
     discountCode,
+    paymentMethod,
     isValidRentalPeriod,
     priceBreakdown,
     minimumRentalDays
@@ -173,7 +177,7 @@ export const usePriceCalculation = (
 
       return () => clearTimeout(timeoutId);
     }
-  }, [autoCalculate, selectedCar, pickupDate, dropoffDate, pickupLocation, dropoffLocation, additionalServices, discountCode, isValidRentalPeriod, calculatePrice]);
+  }, [autoCalculate, selectedCar, pickupDate, dropoffDate, pickupLocation, dropoffLocation, additionalServices, discountCode, paymentMethod, isValidRentalPeriod, calculatePrice]);
 
   // Validate discount code when it changes
   useEffect(() => {

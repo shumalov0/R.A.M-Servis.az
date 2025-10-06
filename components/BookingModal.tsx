@@ -363,14 +363,30 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
               <RadioGroup 
                 value={formData.paymentMethod} 
                 onValueChange={(value) => handleInputChange('paymentMethod', value)}
+                className="space-y-3"
               >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="cash" id="cash" />
-                  <Label htmlFor="cash">{t.cashPayment}</Label>
+                <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                  <RadioGroupItem value="cash" id="cash" className="mt-0.5" />
+                  <div className="flex-1">
+                    <Label htmlFor="cash" className="font-medium cursor-pointer">{t.cashPayment}</Label>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Avtomobili götürərkən nəğd ödəniş. Depozit: {car.deposit}₼
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="online" id="online" />
-                  <Label htmlFor="online">{t.onlinePayment}</Label>
+                <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                  <RadioGroupItem value="online" id="online" className="mt-0.5" />
+                  <div className="flex-1">
+                    <Label htmlFor="online" className="font-medium cursor-pointer">{t.onlinePayment}</Label>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                      Kart və ya bank köçürməsi ilə ödəniş. Depozit: {car.deposit}₼
+                    </p>
+                    <div className="mt-2 p-2 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-md">
+                      <p className="text-xs text-orange-700 dark:text-orange-300 font-medium">
+                        ⚠️ Diqqət: Kartla ödənişdə 18% ƏDV + 18% kart komissiyası tətbiq olunur
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </RadioGroup>
             </CardContent>

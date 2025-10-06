@@ -89,8 +89,8 @@ export default function CarDetailPageContent({
         handleLanguageChange={handleLanguageChange}
         t={t}
       />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-20 sm:pt-24 pb-8 sm:pb-12 w-full overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {/* Car Image and Gallery */}
           <div className="space-y-6">
             <ImageGallery
@@ -354,7 +354,7 @@ export default function CarDetailPageContent({
           </div>
         )}
         {/* Customer Reviews Section */}
-        <div className="mt-16">
+        <div className="mt-8 sm:mt-12 lg:mt-16 w-full overflow-hidden">
           <CustomerReviews
             carId={car.id}
             carModel={`${car.brand} ${car.model}`}
@@ -362,7 +362,7 @@ export default function CarDetailPageContent({
         </div>
 
         {/* Similar Cars Recommendations */}
-        <div className="mt-16">
+        <div className="mt-8 sm:mt-12 lg:mt-16 w-full overflow-hidden">
           <SimilarCars currentCar={enhancedCar} />
         </div>
       </div>

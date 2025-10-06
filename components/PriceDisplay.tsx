@@ -361,10 +361,19 @@ export default function PriceDisplay({
                     <span className="font-medium">{formatPrice(priceBreakdown.subtotal - priceBreakdown.discounts)}</span>
                   </div>
                   
-                  <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-300">VAT (18%)</span>
-                    <span className="font-medium">{formatPrice(priceBreakdown.taxes)}</span>
-                  </div>
+                  {priceBreakdown.taxes > 0 && priceBreakdown.paymentMethod === 'card' && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">VAT (18%)</span>
+                      <span className="font-medium">{formatPrice(priceBreakdown.taxes)}</span>
+                    </div>
+                  )}
+
+                  {priceBreakdown.cardCommission > 0 && priceBreakdown.paymentMethod === 'card' && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Card Commission (18%)</span>
+                      <span className="font-medium text-orange-600">{formatPrice(priceBreakdown.cardCommission)}</span>
+                    </div>
+                  )}
                   
                   <Separator />
                   

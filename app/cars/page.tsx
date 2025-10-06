@@ -69,14 +69,14 @@ export default function CarsPage() {
     if (cls) setCarClass(cls);
     
     // if navigated with category from dropdown, preset category filter
-    const categories = params?.get('categories');
-    if (categories) {
+    const category = params?.get('category');
+    if (category) {
       setFilters({
         ...filters,
-        category: categories.split(',')
+        category: [category]
       });
     }
-  }, [params, setCarClass, setFilters, filters]);
+  }, [params, setCarClass, setFilters]);
 
   const handleLanguageChange = (lang: string) => {
     setCurrentLang(lang);
@@ -246,7 +246,9 @@ export default function CarsPage() {
               currentLang={currentLang} 
               getLocalizedCarClass={getLocalizedCarClass} 
               getLocalizedFuelType={getLocalizedFuelType} 
-              getLocalizedTransmission={getLocalizedTransmission} 
+              getLocalizedTransmission={getLocalizedTransmission}
+              showViewAllButton={false}
+              showTitle={false}
             />
             
             {/* Bottom Pagination */}

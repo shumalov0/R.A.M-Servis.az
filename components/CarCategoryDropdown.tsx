@@ -150,11 +150,11 @@ const CarCategoryDropdown: React.FC<CarCategoryDropdownProps> = ({
             {carCategories.map((category) => (
               <a
                 key={category.id}
-                href={`/cars?categories=${category.displayName}`}
+                href={`/cars?category=${category.displayName}`}
                 onClick={(e) => {
                   setIsOpen(false);
                   setIsHovering(false);
-                  createNavigationHandler(`/cars?categories=${category.displayName}`)(e);
+                  createNavigationHandler(`/cars?category=${category.displayName}`)(e);
                 }}
                 className="flex items-center px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 group cursor-pointer rounded-md"
                 role="menuitem"
