@@ -308,11 +308,11 @@ export const formatPrice = (
   amount: number,
   currency: string = "AZN"
 ): string => {
-  return `${amount.toFixed(0)} ₼`;
+  return `${amount.toFixed(0)}₼`;
 };
 
 export const formatPriceAZ = (amount: number): string => {
-  return `${amount.toFixed(0)} ₼`;
+  return `${amount.toFixed(0)}₼`;
 };
 
 // Price comparison utilities

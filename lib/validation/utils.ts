@@ -590,8 +590,8 @@ export const customValidationRules = {
     
     if (!name) return undefined;
     
-    // Allow letters, spaces, hyphens, apostrophes, and international characters
-    const validNamePattern = /^[\p{L}\p{M}\s'-]+$/u;
+    // Allow letters, spaces, hyphens, apostrophes, dots and international characters (including Cyrillic, Arabic)
+    const validNamePattern = /^[\p{L}\p{M}\s\-'\.]+$/u;
     
     if (!validNamePattern.test(name)) {
       return messages[lang as keyof typeof messages] || messages.az;

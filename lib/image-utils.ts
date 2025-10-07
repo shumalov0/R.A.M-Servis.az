@@ -5,11 +5,89 @@
 export const DEFAULT_FALLBACK_IMAGE = '/cars/placeholder.svg';
 
 export const FALLBACK_IMAGES = [
-  '/cars/12.jpg',
-  '/cars/search.jpg',
+  '/cars/12.webp',
+  '/cars/search.webp',
   '/cars/placeholder.svg',
   'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PGNpcmNsZSBjeD0iMjAwIiBjeT0iMTIwIiByPSI0MCIgZmlsbD0iI2Q1ZDlkZiIvPjxwYXRoIGQ9Im0xODAgMTEwIDEwIDEwIDIwLTIwIDEwIDEwdjI1SDE4MHoiIGZpbGw9IiNhN2I2YzIiLz48dGV4dCB4PSI1MCUiIHk9IjcwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE2IiBmaWxsPSIjNjc3NDg5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5DYXIgSW1hZ2U8L3RleHQ+PC9zdmc+'
 ];
+
+/**
+ * Check browser support for modern image formats
+ */
+export function checkImageFormatSupport(): Promise<{
+  avif: boolean;
+  webp: boolean;
+}> {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1;
+    canvas.height = 1;
+    
+    const avifSupport = canvas.toDataURL('image/avif').indexOf('data:image/avif') === 0;
+    const webpSupport = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    
+    resolve({
+      avif: avifSupport,
+      webp: webpSupport
+    });
+  });
+}
+
+/**
+ * Get optimal image format based on browser support
+ */
+export async function getOptimalImageFormat(): Promise<'avif' | 'webp' | 'jpeg'> {
+  if (typeof window === 'undefined') return 'jpeg';
+  
+  try {
+    const support = await checkImageFormatSupport();
+    if (support.avif) return 'avif';
+    if (support.webp) return 'webp';
+    return 'jpeg';
+  } catch {
+    return 'jpeg';
+  }
+}
+
+/**
+ * Generate responsive image sizes string
+ */
+export function generateImageSizes(width?: number): string {
+  if (!width) {
+    return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
+  }
+  
+  if (width <= 400) {
+    return '(max-width: 640px) 100vw, 400px';
+  }
+  
+  if (width <= 800) {
+    return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px';
+  }
+  
+  return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
+}
+
+/**
+ * Generate blur data URL for better loading experience
+ */
+export function generateBlurDataURL(width: number = 10, height: number = 10, color: string = '#f3f4f6'): string {
+  if (typeof window === 'undefined') {
+    return `data:image/svg+xml;base64,${btoa(`<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/></svg>`)}`;
+  }
+  
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  
+  if (!ctx) return '';
+  
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, width, height);
+  
+  return canvas.toDataURL('image/jpeg', 0.1);
+}
 
 /**
  * Preload an image and return a promise

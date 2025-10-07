@@ -13,7 +13,7 @@
 //       {/* Background Image */}
 //       <div className="absolute inset-0 z-0">
 //         <img 
-//           src="/cars/12.jpg" 
+//           src="/cars/12.webp" 
 //           alt="Luxury Car Fleet" 
 //           className="w-full h-full object-cover"
 //         />
@@ -51,7 +51,7 @@ const HeroSection: FC<HeroSectionProps> = ({ t }) => {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/cars/12.jpg"
+          src="/cars/12.webp"
           alt="Luxury Car Fleet"
           className="w-full h-full object-cover brightness-90 dark:brightness-75"
         />

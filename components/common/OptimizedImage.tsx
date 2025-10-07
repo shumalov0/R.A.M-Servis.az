@@ -1,10 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { usePerformanceOptimization } from '@/hooks/use-performance-optimization';
-import { performanceUtils } from '@/lib/performance-monitor';
+import { getOptimizedImageSrc, getResponsiveSizes, generateBlurDataURL } from '@/lib/image-optimization';
 
 interface OptimizedImageProps {
   src: string;
@@ -21,7 +20,10 @@ interface OptimizedImageProps {
   onLoad?: () => void;
   onError?: () => void;
   fallbackSrc?: string;
+  loading?: 'lazy' | 'eager';
 }
+
+
 
 export function OptimizedImage({
   src,
@@ -32,99 +34,88 @@ export function OptimizedImage({
   priority = false,
   fill = false,
   sizes,
-  quality = 85,
-  placeholder = 'empty',
+  quality = 80, // Optimized for WebP
+  placeholder = 'blur',
   blurDataURL,
   onLoad,
   onError,
   fallbackSrc = '/cars/placeholder.jpg',
+  loading = 'lazy',
   ...props
 }: OptimizedImageProps) {
+  // All images are now WebP
   const [imgSrc, setImgSrc] = useState(src);
   const [hasError, setHasError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const loadStartTime = useRef<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const { optimizeImageSrc, trackInteraction } = usePerformanceOptimization();
-
-  // Optimize image source with WebP support
-  const optimizedSrc = optimizeImageSrc(imgSrc, width, quality);
-
-  useEffect(() => {
-    loadStartTime.current = performance.now();
-  }, [imgSrc]);
+  // Generate blur data URL if not provided
+  const defaultBlurDataURL = blurDataURL || generateBlurDataURL(width || 400, height || 300);
 
   const handleLoad = () => {
-    const loadTime = performance.now() - loadStartTime.current;
-    
-    // Track performance metrics
-    trackInteraction('image-load-success', 'optimized-image', loadTime);
-    performanceUtils.measureImageLoad(imgSrc).catch(() => {
-      // Silent fail for performance tracking
-    });
-    
+    setIsLoading(false);
     onLoad?.();
   };
 
   const handleError = () => {
-    const loadTime = performance.now() - loadStartTime.current;
     setHasError(true);
+    setIsLoading(false);
     
-    // Track error metrics
-    trackInteraction('image-load-error', 'optimized-image', loadTime);
-    
-    // Retry logic with exponential backoff
-    if (retryCount < 2) {
-      setTimeout(() => {
-        setRetryCount(prev => prev + 1);
-        setHasError(false);
-        setImgSrc(src); // Reset to original source
-      }, Math.pow(2, retryCount) * 1000);
-    } else {
+    // Try fallback image
+    if (imgSrc !== fallbackSrc) {
       setImgSrc(fallbackSrc);
+      setHasError(false);
     }
     
     onError?.();
   };
 
+  // Optimize sizes based on common breakpoints
+  const optimizedSizes = fill 
+    ? sizes || '100vw'
+    : sizes || getResponsiveSizes(width);
+
   return (
-    <div className={cn('relative overflow-hidden', className)}>
+    <div className={cn('relative overflow-hidden bg-gray-100', className)}>
+      {isLoading && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+      )}
+      
       <Image
-        src={optimizedSrc}
+        src={imgSrc}
         alt={alt}
         width={fill ? undefined : width}
         height={fill ? undefined : height}
         fill={fill}
-        sizes={sizes}
+        sizes={optimizedSizes}
         quality={quality}
         priority={priority}
         placeholder={placeholder}
-        blurDataURL={blurDataURL}
+        blurDataURL={defaultBlurDataURL}
         onLoad={handleLoad}
         onError={handleError}
+        loading={loading}
         className={cn(
-          hasError && retryCount >= 2 && 'grayscale'
+          'transition-opacity duration-300',
+          isLoading ? 'opacity-0' : 'opacity-100',
+          hasError && 'grayscale'
         )}
+        style={{
+          objectFit: 'cover',
+          objectPosition: 'center',
+        }}
         {...props}
       />
       
-      {hasError && retryCount >= 2 && (
+      {hasError && imgSrc === fallbackSrc && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
           <div className="text-center text-gray-500">
-            <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="text-sm">Image unavailable</p>
-            {retryCount > 0 && (
-              <p className="text-xs text-gray-400 mt-1">
-                Retried {retryCount} times
-              </p>
-            )}
+            <p className="text-xs">Şəkil yüklənmədi</p>
           </div>
         </div>
       )}
-      
-
     </div>
   );
 }

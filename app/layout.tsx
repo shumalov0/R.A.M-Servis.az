@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import LazyThreeBackground from "@/components/LazyThreeBackground";
 import ClientLayout from "@/components/ClientLayout";
 import SEOAnalytics from "@/components/SEOAnalytics";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
 import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -77,6 +78,35 @@ export default function RootLayout({
   return (
     <html lang="az">
       <head>
+        {/* Performance Optimization */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+        {/* Resource Hints */}
+        <link
+          rel="preload"
+          href="/icons/logosyellow.png"
+          as="image"
+          type="image/png"
+        />
+
         {/* Google Site Verification - Deploy sonrası əlavə edin */}
         <meta
           name="google-site-verification"

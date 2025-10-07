@@ -123,8 +123,8 @@ const PHONE_REGEX = /^(\+994|994|0)?(50|51|55|70|77|99|10|12)\d{7}$/;
 const INTERNATIONAL_PHONE_REGEX = /^(\+\d{1,3})?[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}$/;
 
 // Name validation regex (letters, spaces, hyphens, apostrophes, and international characters)
-// More permissive regex to handle all international characters including Azerbaijani
-const NAME_REGEX = /^[\p{L}\p{M}\s'-]+$/u;
+// Unicode regex to handle all international characters including Azerbaijani, Russian, Arabic
+const NAME_REGEX = /^[\p{L}\p{M}\s\-'\.]+$/u;
 
 // Enhanced email validation regex
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;

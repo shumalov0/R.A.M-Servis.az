@@ -105,7 +105,7 @@ export default function Home() {
           {/* BookingBar */}
           <section
             className="relative flex items-center justify-center bg-fixed bg-center bg-cover py-10 h-[100%] md:h-96"
-            style={{ backgroundImage: "url('/cars/search.jpg')" }}
+            style={{ backgroundImage: "url('/cars/search.webp')" }}
           >
             <div className="absolute inset-0 bg-black/40"></div>
             <div className="relative z-10 max-w-6xl w-full px-4 ">
