@@ -44,7 +44,7 @@ export async function sendInitialConfirmation(
   language: 'az' | 'en' | 'ru' = 'az'
 ): Promise<EmailResult> {
   try {
-    console.log('🔧 EmailJS konfiqurasiyası yoxlanılır...');
+    // console.log('🔧 EmailJS konfiqurasiyası yoxlanılır...');
     
     // Konfiqurasiya yoxlanışı
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
@@ -62,7 +62,7 @@ export async function sendInitialConfirmation(
     }
     
     const confirmationNumber = generateConfirmationNumber();
-    console.log('📧 Təsdiq nömrəsi yaradıldı:', confirmationNumber);
+    // console.log('📧 Təsdiq nömrəsi yaradıldı:', confirmationNumber);
     
     const emailContent = getInitialConfirmationContent(bookingData, confirmationNumber, language);
     
@@ -80,9 +80,9 @@ export async function sendInitialConfirmation(
       company_phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '+994707004444',
     };
     
-    console.log('📨 Email parametrləri:', templateParams);
-    console.log('🎯 Biznes emaili:', process.env.BUSINESS_EMAIL);
-    console.log('🚀 EmailJS-ə göndərilir...');
+    // console.log('📨 Email parametrləri:', templateParams);
+    // console.log('🎯 Biznes emaili:', process.env.BUSINESS_EMAIL);
+    // console.log('🚀 EmailJS-ə göndərilir...');
 
     const result = await emailjs.send(
       serviceId,
@@ -91,7 +91,7 @@ export async function sendInitialConfirmation(
       publicKey
     );
     
-    console.log('✅ EmailJS cavabı:', result);
+    // console.log('✅ EmailJS cavabı:', result);
 
     return {
       success: true,
@@ -112,8 +112,8 @@ export async function sendBusinessNotification(
   confirmationNumber: string
 ): Promise<EmailResult> {
   try {
-    console.log('🏢 Biznes emaili göndərilir...');
-    console.log('🎯 Hədəf email:', process.env.BUSINESS_EMAIL || 'info@ramservis.az');
+    // console.log('🏢 Biznes emaili göndərilir...');
+    // console.log('🎯 Hədəf email:', process.env.BUSINESS_EMAIL || 'info@ramservis.az');
     
     const templateParams = {
       to_email: 'info@ramservis.az', // Birbaşa hardcode

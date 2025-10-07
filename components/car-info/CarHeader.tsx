@@ -32,7 +32,7 @@ export function CarHeader({
           url: window.location.href,
         });
       } catch (error) {
-        console.log('Error sharing:', error);
+        // console.log('Error sharing:', error);
       }
     } else {
       // Fallback to copying URL to clipboard

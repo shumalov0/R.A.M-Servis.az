@@ -459,7 +459,7 @@ export const initializeFormPersistence = (options: FormStateOptions = {}): void 
   // Clear expired states on initialization
   const clearedCount = clearExpiredFormStates(options);
   if (clearedCount > 0) {
-    console.log(`Cleared ${clearedCount} expired form states`);
+    // console.log(`Cleared ${clearedCount} expired form states`);
   }
 
   // Set up periodic cleanup (every hour)

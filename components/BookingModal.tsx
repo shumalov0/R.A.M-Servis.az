@@ -152,9 +152,9 @@ export default function BookingModal({ car, currentLang, onClose }: BookingModal
     localStorage.setItem('ramservis_bookings', JSON.stringify(existingBookings));
 
     // Simulate email sending (in real app, this would be handled by backend)
-    console.log('Email sent to customer:', formData.email);
-    console.log('Email sent to business:', 'info@ramservis.az');
-    console.log('Booking details:', bookingDetails);
+    // console.log('Email sent to customer:', formData.email);
+    // console.log('Email sent to business:', 'info@ramservis.az');
+    // console.log('Booking details:', bookingDetails);
 
     if (formData.paymentMethod === 'online') {
       // Send WhatsApp message for online payment

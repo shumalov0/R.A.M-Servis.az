@@ -171,7 +171,7 @@ class GoogleReviewsService {
     // Əvvəlcə Google My Business API-ni cəhd et
     if (this.accountId && this.locationId) {
       try {
-        console.log('Google My Business API-dən yorumlar çəkilir...');
+        // console.log('Google My Business API-dən yorumlar çəkilir...');
         return await this.fetchMyBusinessReviews();
       } catch (error) {
         console.warn('Google My Business API xətası, Places API-yə keçilir:', error);
@@ -181,7 +181,7 @@ class GoogleReviewsService {
     // Sonra Google Places API-ni cəhd et
     if (this.placeId) {
       try {
-        console.log('Google Places API-dən yorumlar çəkilir...');
+        // console.log('Google Places API-dən yorumlar çəkilir...');
         return await this.fetchPlacesReviews();
       } catch (error) {
         console.error('Google Places API də xəta:', error);

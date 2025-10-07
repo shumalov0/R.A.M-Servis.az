@@ -140,7 +140,7 @@ export const calculateRentalPrice = (
   } = options;
 
   // Debug log
-  console.log("Price calculation - paymentMethod:", paymentMethod);
+  // console.log("Price calculation - paymentMethod:", paymentMethod);
 
   // Calculate rental period
   const days = calculateDaysBetween(pickupDate, dropoffDate);
@@ -243,10 +243,10 @@ export const calculateRentalPrice = (
   const cardCommission = 0;
 
   // Debug logs
-  console.log("Tax calculation - paymentMethod:", paymentMethod);
-  console.log("Tax calculation - taxableAmount:", taxableAmount);
-  console.log("Tax calculation - taxes:", taxes);
-  console.log("Tax calculation - cardCommission:", cardCommission);
+  // console.log("Tax calculation - paymentMethod:", paymentMethod);
+  // console.log("Tax calculation - taxableAmount:", taxableAmount);
+  // console.log("Tax calculation - taxes:", taxes);
+  // console.log("Tax calculation - cardCommission:", cardCommission);
 
   // Calculate final total (no card commission)
   const total = taxableAmount + taxes;

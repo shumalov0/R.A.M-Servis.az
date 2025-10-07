@@ -24,7 +24,7 @@ export async function sendContactEmail(
   language: 'az' | 'en' | 'ru' = 'az'
 ): Promise<ContactEmailResult> {
   try {
-    console.log('📧 Contact email göndərilir...');
+    // console.log('📧 Contact email göndərilir...');
     
     // Email validasiya
     const emailValidationError = getEmailValidationMessage(formData.email, language);
@@ -63,7 +63,7 @@ export async function sendContactEmail(
       confirmation_number: `CONTACT_${Date.now()}`,
     };
     
-    console.log('📨 Contact email parametrləri:', templateParams);
+    // console.log('📨 Contact email parametrləri:', templateParams);
 
     const result = await emailjs.send(
       serviceId,
@@ -72,7 +72,7 @@ export async function sendContactEmail(
       publicKey
     );
     
-    console.log('✅ Contact email göndərildi:', result);
+    // console.log('✅ Contact email göndərildi:', result);
 
     return { success: true };
     

@@ -28,8 +28,23 @@ const nextConfig = {
   // Performance optimizations
   experimental: {
     optimizeCss: true,
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons', 'framer-motion'],
-    webVitalsAttribution: ['CLS', 'LCP'],
+    optimizePackageImports: [
+      'lucide-react', 
+      '@radix-ui/react-icons', 
+      'framer-motion',
+      'three',
+      '@react-three/fiber',
+      '@react-three/drei'
+    ],
+    webVitalsAttribution: ['CLS', 'LCP', 'FID', 'FCP', 'TTFB'],
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
   },
   
   // Faster page transitions
@@ -48,6 +63,30 @@ const nextConfig = {
           reportFilename: '../bundle-analyzer-report.html'
         })
       );
+    }
+
+    // Optimize for production
+    if (!dev) {
+      // Tree shaking optimization
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+      
+      // Module concatenation
+      config.optimization.concatenateModules = true;
+      
+      // Remove unused CSS
+      if (!config.optimization.splitChunks) {
+        config.optimization.splitChunks = { cacheGroups: {} };
+      }
+      if (!config.optimization.splitChunks.cacheGroups) {
+        config.optimization.splitChunks.cacheGroups = {};
+      }
+      config.optimization.splitChunks.cacheGroups.styles = {
+        name: 'styles',
+        test: /\.(css|scss)$/,
+        chunks: 'all',
+        enforce: true,
+      };
     }
 
     // Optimize chunks for better performance

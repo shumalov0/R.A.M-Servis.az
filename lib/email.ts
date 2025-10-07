@@ -184,7 +184,7 @@ async function sendEmailWithRetry(
   
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      console.log(`Sending email attempt ${attempt + 1}/${config.maxRetries + 1} to ${toEmail}`);
+      // console.log(`Sending email attempt ${attempt + 1}/${config.maxRetries + 1} to ${toEmail}`);
       
       const fetchPromise = fetch(EMAILJS_ENDPOINT, {
         method: 'POST',
@@ -199,7 +199,7 @@ async function sendEmailWithRetry(
       const response = await Promise.race([fetchPromise, timeoutPromise]);
       
       if (response.ok) {
-        console.log(`Email sent successfully to ${toEmail}`);
+        // console.log(`Email sent successfully to ${toEmail}`);
         return { success: true, retryCount: attempt };
       } else {
         const errorText = await response.text().catch(() => 'Unknown error');
@@ -250,17 +250,17 @@ export async function sendBookingEmails(
   ]);
 
   // Log results
-  if (toCustomer.success) {
-    console.log('Customer confirmation email sent successfully');
-  } else {
-    console.error('Failed to send customer confirmation email:', toCustomer.error);
-  }
+  // if (toCustomer.success) {
+  //   console.log('Customer confirmation email sent successfully');
+  // } else {
+  //   console.error('Failed to send customer confirmation email:', toCustomer.error);
+  // }
 
-  if (toBusiness.success) {
-    console.log('Business notification email sent successfully');
-  } else {
-    console.error('Failed to send business notification email:', toBusiness.error);
-  }
+  // if (toBusiness.success) {
+  //   console.log('Business notification email sent successfully');
+  // } else {
+  //   console.error('Failed to send business notification email:', toBusiness.error);
+  // }
 
   return { toCustomer, toBusiness };
 }
@@ -435,7 +435,7 @@ export async function sendBookingEmailsWithPayment(
     // Add payment link to payload
     payload.paymentLink = paymentLink;
     
-    console.log('Generated payment link:', paymentLink);
+    // console.log('Generated payment link:', paymentLink);
   }
 
   const emailResults = await sendBookingEmails(payload, config);
@@ -508,17 +508,17 @@ export async function sendEnhancedBookingEmails(
   ]);
 
   // Log results
-  if (toCustomer.success) {
-    console.log('✅ Customer confirmation email sent successfully');
-  } else {
-    console.error('❌ Failed to send customer confirmation email:', toCustomer.error);
-  }
+  // if (toCustomer.success) {
+  //   console.log('✅ Customer confirmation email sent successfully');
+  // } else {
+  //   console.error('❌ Failed to send customer confirmation email:', toCustomer.error);
+  // }
 
-  if (toBusiness.success) {
-    console.log('✅ Business notification email sent successfully');
-  } else {
-    console.error('❌ Failed to send business notification email:', toBusiness.error);
-  }
+  // if (toBusiness.success) {
+  //   console.log('✅ Business notification email sent successfully');
+  // } else {
+  //   console.error('❌ Failed to send business notification email:', toBusiness.error);
+  // }
 
   return { toCustomer, toBusiness, paymentLink };
 }

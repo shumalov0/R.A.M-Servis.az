@@ -46,7 +46,7 @@ export async function handleBookingSubmission(
       paymentMethod: formData.paymentMethod || 'cash', // Ödəniş metodu əlavə et
     };
 
-    console.log('📧 Rezervasiya emailləri göndərilir...');
+    // console.log('📧 Rezervasiya emailləri göndərilir...');
 
     // 1. Müştəriyə ilkin təsdiq göndər
     const customerResult = await sendInitialConfirmation(bookingData, language);
@@ -68,7 +68,7 @@ export async function handleBookingSubmission(
     // 3. Rezervasiyanı verilənlər bazasına əlavə et (gələcəkdə)
     // await saveBookingToDatabase(bookingData, confirmationNumber);
 
-    console.log(`✅ Rezervasiya uğurla yaradıldı: ${confirmationNumber}`);
+    // console.log(`✅ Rezervasiya uğurla yaradıldı: ${confirmationNumber}`);
 
     return {
       success: true,

@@ -124,7 +124,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ currentLang, className = '' }) =>
         return;
       }
       
-      console.log('Initializing map with coordinates:', companyInfo.lat, companyInfo.lng);
+      // console.log('Initializing map with coordinates:', companyInfo.lat, companyInfo.lng);
 
       try {
         // Initialize map with better options
@@ -169,7 +169,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ currentLang, className = '' }) =>
           if (tileLayerAdded || currentProviderIndex >= tileProviders.length) return;
           
           const provider = tileProviders[currentProviderIndex];
-          console.log(`Trying tile provider: ${provider.name}`);
+          // console.log(`Trying tile provider: ${provider.name}`);
           
           const tileLayer = window.L.tileLayer(provider.url, {
             attribution: provider.attribution,
@@ -187,7 +187,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({ currentLang, className = '' }) =>
 
           tileLayer.on('tileload', () => {
             if (!tileLayerAdded) {
-              console.log(`Successfully loaded tiles from: ${provider.name}`);
+              // console.log(`Successfully loaded tiles from: ${provider.name}`);
               tileLayerAdded = true;
               // Set loaded state after first successful tile load
               setTimeout(() => setIsLoaded(true), 500);

@@ -1,10 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import WhatsAppButton from './WhatsAppButton';
+import dynamic from 'next/dynamic';
 import { useTranslation } from '@/lib/translations';
 import { usePathname } from 'next/navigation';
-// Removed animation imports for better performance
+
+// Lazy load WhatsApp button to reduce initial bundle
+const WhatsAppButton = dynamic(() => import('./WhatsAppButton'), {
+  ssr: false,
+  loading: () => null,
+});
+
+// Performance dashboard removed for production
 
 interface ClientLayoutProps {
   children: React.ReactNode;
@@ -98,6 +105,7 @@ const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
         showOnMobile={true}
         contextualMessage={getContextualMessage()}
       />
+      {/* Performance dashboard removed for production */}
     </>
   );
 };

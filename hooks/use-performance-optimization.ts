@@ -1,13 +1,11 @@
 'use client';
 
 import React, { useEffect, useCallback, useRef } from 'react';
-import { usePerformanceMonitor } from '@/lib/performance-monitor';
 
 interface PerformanceOptimizationOptions {
   enableImageOptimization?: boolean;
   enableLazyLoading?: boolean;
   enablePreloading?: boolean;
-  trackUserInteractions?: boolean;
   debounceMs?: number;
 }
 
@@ -16,11 +14,9 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     enableImageOptimization = true,
     enableLazyLoading = true,
     enablePreloading = true,
-    trackUserInteractions = true,
     debounceMs = 300
   } = options;
 
-  const monitor = usePerformanceMonitor();
   const intersectionObserver = useRef<IntersectionObserver | null>(null);
   const preloadedResources = useRef<Set<string>>(new Set());
 
@@ -39,12 +35,6 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
               const img = element as HTMLImageElement;
               img.src = element.dataset.src;
               img.removeAttribute('data-src');
-              monitor.trackUserInteraction('lazy-load', 'image');
-            }
-            
-            // Handle lazy component loading
-            if (element.dataset.component) {
-              monitor.trackUserInteraction('lazy-load', element.dataset.component);
             }
             
             intersectionObserver.current?.unobserve(element);
@@ -60,7 +50,7 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     return () => {
       intersectionObserver.current?.disconnect();
     };
-  }, [enableLazyLoading, monitor]);
+  }, [enableLazyLoading]);
 
   // Preload critical resources
   const preloadResource = useCallback((href: string, as: string = 'fetch') => {
@@ -77,9 +67,7 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     
     document.head.appendChild(link);
     preloadedResources.current.add(href);
-    
-    monitor.trackUserInteraction('preload', as, 1);
-  }, [enablePreloading, monitor]);
+  }, [enablePreloading]);
 
   // Optimize images with WebP support
   const optimizeImageSrc = useCallback((src: string, width?: number, quality: number = 85) => {
@@ -115,32 +103,12 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     };
   }, [debounceMs]);
 
-  // Track user interactions with debouncing
-  const trackInteraction = useCallback(
-    debounce((action: string, element: string, value?: number) => {
-      if (trackUserInteractions) {
-        monitor.trackUserInteraction(action, element, value);
-      }
-    }),
-    [monitor, trackUserInteractions, debounce]
-  );
-
   // Observe element for lazy loading
   const observeElement = useCallback((element: HTMLElement) => {
     if (intersectionObserver.current && element) {
       intersectionObserver.current.observe(element);
     }
   }, []);
-
-  // Measure component performance
-  const measureComponent = useCallback((componentName: string) => {
-    const startTime = performance.now();
-    
-    return () => {
-      const renderTime = performance.now() - startTime;
-      monitor.recordMetric(`${componentName}-render`, renderTime);
-    };
-  }, [monitor]);
 
   // Prefetch route on hover
   const prefetchRoute = useCallback((href: string) => {
@@ -150,43 +118,9 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
         link.rel = 'prefetch';
         link.href = href;
         document.head.appendChild(link);
-        
-        monitor.trackUserInteraction('prefetch', 'route');
       });
     }
-  }, [monitor]);
-
-  // Critical resource hints
-  const addResourceHints = useCallback((resources: Array<{ href: string; rel: string; as?: string }>) => {
-    resources.forEach(({ href, rel, as }) => {
-      const link = document.createElement('link');
-      link.rel = rel;
-      link.href = href;
-      if (as) link.as = as;
-      document.head.appendChild(link);
-    });
   }, []);
-
-  // Memory usage monitoring
-  const checkMemoryUsage = useCallback(() => {
-    if (typeof window !== 'undefined' && 'memory' in performance) {
-      const memory = (performance as any).memory;
-      const usage = (memory.usedJSHeapSize / memory.jsHeapSizeLimit) * 100;
-      
-      if (usage > 80) {
-        console.warn('High memory usage detected:', usage.toFixed(2) + '%');
-        monitor.recordMetric('memory-usage-high', usage);
-      }
-      
-      return {
-        used: memory.usedJSHeapSize,
-        total: memory.totalJSHeapSize,
-        limit: memory.jsHeapSizeLimit,
-        percentage: usage
-      };
-    }
-    return null;
-  }, [monitor]);
 
   // Cleanup function
   const cleanup = useCallback(() => {
@@ -198,12 +132,8 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     // Core functions
     preloadResource,
     optimizeImageSrc,
-    trackInteraction,
     observeElement,
-    measureComponent,
     prefetchRoute,
-    addResourceHints,
-    checkMemoryUsage,
     cleanup,
     
     // Utilities
@@ -213,8 +143,7 @@ export function usePerformanceOptimization(options: PerformanceOptimizationOptio
     isOptimizationEnabled: {
       images: enableImageOptimization,
       lazyLoading: enableLazyLoading,
-      preloading: enablePreloading,
-      tracking: trackUserInteractions
+      preloading: enablePreloading
     }
   };
 }
@@ -226,20 +155,6 @@ export function withPerformanceOptimization<P extends object>(
   options?: PerformanceOptimizationOptions
 ) {
   return function OptimizedComponent(props: P) {
-    const { measureComponent, trackInteraction } = usePerformanceOptimization(options);
-    
-    useEffect(() => {
-      const endMeasurement = measureComponent(componentName);
-      
-      // Track component mount
-      trackInteraction('mount', componentName);
-      
-      return () => {
-        endMeasurement();
-        trackInteraction('unmount', componentName);
-      };
-    }, [measureComponent, trackInteraction]);
-
     return React.createElement(Component as React.ComponentType<P>, props as P);
   };
 }

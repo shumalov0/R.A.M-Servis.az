@@ -63,7 +63,7 @@ export default function SocialShare({ car, currentUrl }: SocialShareProps) {
     window.open(shareUrl, '_blank', windowFeatures);
     
     // Track sharing event (in real app, you'd send this to analytics)
-    console.log(`Shared ${car.brand} ${car.model} on ${platform}`);
+    // console.log(`Shared ${car.brand} ${car.model} on ${platform}`);
   };
 
   const handleNativeShare = async () => {
@@ -76,7 +76,7 @@ export default function SocialShare({ car, currentUrl }: SocialShareProps) {
         });
       } catch (err) {
         // User cancelled or error occurred
-        console.log('Native share cancelled or failed');
+        // console.log('Native share cancelled or failed');
       }
     } else {
       setIsOpen(!isOpen);

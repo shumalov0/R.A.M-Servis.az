@@ -132,7 +132,7 @@ export default function InlineBookingForm({
         throw new Error(result.error || 'Rezervasiya zamanı xəta baş verdi');
       }
 
-      console.log('✅ Rezervasiya uğurla yaradıldı:', result.confirmationNumber);
+      // console.log('✅ Rezervasiya uğurla yaradıldı:', result.confirmationNumber);
 
       // Call the original onBookingSubmit handler
       await onBookingSubmit({

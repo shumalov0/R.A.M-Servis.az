@@ -328,7 +328,7 @@ export default function CarDetailPageContent({
               onBookingSubmit={async (data: BookingFormData) => {
                 try {
                   // Handle successful booking submission
-                  console.log("Booking submitted:", data);
+                  // console.log("Booking submitted:", data);
 
                   // Send WhatsApp message for online payments
                   if (data.paymentMethod === "online" && data.paymentLink) {

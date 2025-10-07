@@ -2,11 +2,15 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
-import LazyThreeBackground from "@/components/LazyThreeBackground";
 import ClientLayout from "@/components/ClientLayout";
-import SEOAnalytics from "@/components/SEOAnalytics";
-import PerformanceMonitor from "@/components/PerformanceMonitor";
 import Script from "next/script";
+import dynamic from "next/dynamic";
+
+// Lazy load heavy components with performance optimization
+const SEOAnalytics = dynamic(() => import("@/components/SEOAnalytics"), {
+  ssr: false,
+  loading: () => null,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -117,14 +121,33 @@ export default function RootLayout({
         {/* <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" /> */}
       </head>
       <body className={inter.className}>
-        {/* Google Analytics - Deploy sonrası GA4 ID əlavə edin */}
+        {/* Preload critical resources */}
+        <Script
+          id="preload-critical"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Preload critical resources immediately
+              const criticalImages = ['/icons/logosyellow.png'];
+              criticalImages.forEach(src => {
+                const link = document.createElement('link');
+                link.rel = 'preload';
+                link.href = src;
+                link.as = 'image';
+                document.head.appendChild(link);
+              });
+            `
+          }}
+        />
+
+        {/* Google Analytics - Load with delay to improve performance */}
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
-              strategy="afterInteractive"
+              strategy="lazyOnload"
             />
-            <Script id="google-analytics" strategy="afterInteractive">
+            <Script id="google-analytics" strategy="lazyOnload">
               {`
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -144,12 +167,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {/* Three.js Background - lazy loaded to improve initial performance */}
-          <LazyThreeBackground
-            scene="minimal"
-            intensity="low"
-            responsive={true}
-          />
           <script
             type="application/ld+json"
             suppressHydrationWarning
@@ -182,6 +199,8 @@ export default function RootLayout({
             }}
           />
           <ClientLayout>{children}</ClientLayout>
+          
+          {/* Load heavy components only after initial render */}
           <SEOAnalytics />
         </ThemeProvider>
       </body>

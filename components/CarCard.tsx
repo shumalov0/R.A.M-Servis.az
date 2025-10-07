@@ -1,5 +1,5 @@
 "use client";
-import { FC } from "react";
+import { FC, memo, useMemo, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
@@ -20,7 +20,7 @@ interface CarCardProps {
   getLocalizedTransmission: (transmission: string) => string;
 }
 
-const CarCard: FC<CarCardProps> = ({
+const CarCard: FC<CarCardProps> = memo(({
   car,
   currentLang,
   t,
@@ -30,8 +30,8 @@ const CarCard: FC<CarCardProps> = ({
 }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
 
-  // Handle different image properties between Car and EnhancedCar
-  const getCarImage = () => {
+  // Memoize expensive calculations
+  const carImage = useMemo(() => {
     if ("gallery" in car && car.gallery?.length) {
       return car.gallery[0];
     }
@@ -39,17 +39,28 @@ const CarCard: FC<CarCardProps> = ({
       return car.images[0];
     }
     return car.image;
-  };
+  }, [car]);
 
-  // Get car category from enhanced data
-  const getCarCategory = () => {
+  const carCategory = useMemo(() => {
     if ("category" in car && car.category) {
       return car.category;
     }
     // Fallback to enhanced cars data
     const enhancedCar = enhancedCars.find((ec) => ec.id === car.id);
     return enhancedCar?.category || car.class;
-  };
+  }, [car]);
+
+  const handleFavoriteClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(car.id);
+  }, [car.id, toggleFavorite]);
+
+  const handleBookingClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = `/booking?car=${car.id}&lang=${currentLang}`;
+  }, [car.id, currentLang]);
 
   return (
     <Link
@@ -61,7 +72,7 @@ const CarCard: FC<CarCardProps> = ({
         {/* Şəkil hissəsi */}
         <div className="aspect-[4/3] relative overflow-hidden imageParent w-full">
           <Image
-            src={getCarImage()}
+            src={carImage}
             alt={`${car.brand} ${car.model}`}
             fill
             className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
@@ -78,7 +89,7 @@ const CarCard: FC<CarCardProps> = ({
               variant="secondary"
               className="bg-white text-[#dbbc42] px-[12px] py-[3px] rounded-[4px] text-[12px]"
             >
-              {getLocalizedCarClass(getCarCategory())}
+              {getLocalizedCarClass(carCategory)}
             </Badge>
           </div>
         </div>
@@ -89,11 +100,7 @@ const CarCard: FC<CarCardProps> = ({
           </h3>
           <button
             aria-label="Toggle favorite"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleFavorite(car.id);
-            }}
+            onClick={handleFavoriteClick}
             className="absolute top-4 right-4 p-2 rounded-full bg-white/80 dark:bg-black/50 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:scale-110 transition"
           >
             <Heart
@@ -168,12 +175,7 @@ const CarCard: FC<CarCardProps> = ({
               </h6>
               <Button
                 className="bg-brand-gold hover:bg-brand-gold/90 text-white font-semibold px-6 py-2 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transform transition-all duration-200"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  // Navigate to booking with car pre-selected
-                  window.location.href = `/booking?car=${car.id}&lang=${currentLang}`;
-                }}
+                onClick={handleBookingClick}
               >
                 {currentLang === "az"
                   ? "İndi Sifariş Et"
@@ -189,6 +191,8 @@ const CarCard: FC<CarCardProps> = ({
       </Card>
     </Link>
   );
-};
+});
+
+CarCard.displayName = 'CarCard';
 
 export default CarCard;

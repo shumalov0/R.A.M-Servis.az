@@ -172,14 +172,7 @@ export interface WhatsAppConfig {
   };
 }
 
-// Three.js background configuration
-export interface ThreeBackgroundConfig {
-  scene: 'particles' | 'geometric' | 'minimal';
-  intensity: 'low' | 'medium' | 'high';
-  color: string;
-  responsive: boolean;
-  reducedMotion: boolean;
-}
+// Removed Three.js background configuration for better performance
 
 // API response interfaces
 export interface ApiResponse<T> {
