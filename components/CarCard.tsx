@@ -1,7 +1,7 @@
 "use client";
 import { FC, memo, useMemo, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { OptimizedImage } from "@/components/common/OptimizedImage";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -71,17 +71,13 @@ const CarCard: FC<CarCardProps> = memo(({
       <Card className="rounded-2xl shadow-lg overflow-hidden border border-gray-200 dark:border-slate-700 w-full cursor-pointer hover:shadow-xl transition-shadow duration-300">
         {/* Şəkil hissəsi */}
         <div className="aspect-[4/3] relative overflow-hidden imageParent w-full">
-          <Image
+          <OptimizedImage
             src={carImage}
             alt={`${car.brand} ${car.model}`}
             fill
             className="object-cover w-full h-full transition-transform duration-300 hover:scale-105"
-            priority={false}
-            loading="lazy"
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            quality={75}
+            context="card"
+            isAboveFold={false}
           />
           {/* Badge */}
           <div className="absolute top-4 right-4">
@@ -112,11 +108,12 @@ const CarCard: FC<CarCardProps> = memo(({
             />
           </button>
           <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-[5px] pt-1">
-            <Image
+            <OptimizedImage
               src="/icons/location.svg"
               alt="location"
               height={10}
               width={10}
+              context="thumbnail"
             />
             <span>27A Ahmed Racabli Baku Narimanov</span>
           </p>

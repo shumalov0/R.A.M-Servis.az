@@ -102,35 +102,43 @@ export function useCarFilters(
 
   // Update URL with current filter state
   const updateURL = useCallback(() => {
-    const params = new URLSearchParams();
-    
-    // Add search parameter
-    if (search) params.set('search', search);
-    
-    // Add filter parameters
-    if (filters.category?.length) params.set('category', filters.category.join(','));
-    if (filters.fuelType?.length) params.set('fuelTypes', filters.fuelType.join(','));
-    if (filters.transmission?.length) params.set('transmissions', filters.transmission.join(','));
-    if (filters.features?.length) params.set('features', filters.features.join(','));
-    
-    // Add price range if different from default
-    if (priceRange[0] !== defaultPriceRange[0] || priceRange[1] !== defaultPriceRange[1]) {
-      params.set('minPrice', priceRange[0].toString());
-      params.set('maxPrice', priceRange[1].toString());
+    try {
+      const params = new URLSearchParams();
+      
+      // Add search parameter
+      if (search) params.set('search', search);
+      
+      // Add filter parameters
+      if (filters.category?.length) params.set('category', filters.category.join(','));
+      if (filters.fuelType?.length) params.set('fuelTypes', filters.fuelType.join(','));
+      if (filters.transmission?.length) params.set('transmissions', filters.transmission.join(','));
+      if (filters.features?.length) params.set('features', filters.features.join(','));
+      
+      // Add price range if different from default
+      if (priceRange[0] !== defaultPriceRange[0] || priceRange[1] !== defaultPriceRange[1]) {
+        params.set('minPrice', priceRange[0].toString());
+        params.set('maxPrice', priceRange[1].toString());
+      }
+      
+      // Add year filter
+      if (year) params.set('year', year.toString());
+      
+      // Add class filter
+      if (carClass) params.set('class', carClass);
+      
+      // Add sort parameter if not default
+      if (sort !== 'price-asc') params.set('sort', sort);
+      
+      // Update URL without causing a page reload
+      const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
+      
+      // Use router.replace with proper error handling
+      if (router && typeof router.replace === 'function') {
+        router.replace(newURL, { scroll: false });
+      }
+    } catch (error) {
+      console.warn('Failed to update URL:', error);
     }
-    
-    // Add year filter
-    if (year) params.set('year', year.toString());
-    
-    // Add class filter
-    if (carClass) params.set('class', carClass);
-    
-    // Add sort parameter if not default
-    if (sort !== 'price-asc') params.set('sort', sort);
-    
-    // Update URL without causing a page reload
-    const newURL = params.toString() ? `?${params.toString()}` : window.location.pathname;
-    router.replace(newURL, { scroll: false });
   }, [filters, search, priceRange, year, carClass, sort, router, defaultPriceRange]);
 
   // Debounced URL update
@@ -171,7 +179,15 @@ export function useCarFilters(
     setYearState(undefined);
     setCarClassState(undefined);
     setSortState('price-asc');
-    router.replace(window.location.pathname, { scroll: false });
+    
+    try {
+      if (router && typeof router.replace === 'function') {
+        router.replace(window.location.pathname, { scroll: false });
+      }
+    } catch (error) {
+      console.warn('Failed to reset URL:', error);
+      window.location.href = window.location.pathname;
+    }
   }, [defaultPriceRange, router]);
 
   return {

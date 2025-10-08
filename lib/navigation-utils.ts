@@ -3,19 +3,13 @@
  */
 
 export const navigateTo = (url: string, forceReload = false) => {
-  if (forceReload || typeof window === 'undefined') {
-    // Use window.location for static exports or server-side
+  if (typeof window === 'undefined') return;
+  
+  if (forceReload) {
     window.location.href = url;
   } else {
-    // Try Next.js router first, fallback to window.location
-    try {
-      const { useRouter } = require('next/navigation');
-      const router = useRouter();
-      router.push(url);
-    } catch (error) {
-      console.warn('Next.js router not available, using window.location');
-      window.location.href = url;
-    }
+    // Use window.location for better compatibility
+    window.location.href = url;
   }
 };
 
@@ -24,16 +18,17 @@ export const isStaticExport = () => {
   return process.env.NODE_ENV === 'production' && !process.env.NEXT_RUNTIME;
 };
 
-export const createNavigationHandler = (url: string) => {
+export const createNavigationHandler = (url: string, router?: any) => {
   return (e?: React.MouseEvent) => {
     if (e) {
       e.preventDefault();
     }
     
-    if (isStaticExport()) {
-      window.location.href = url;
+    // Use router if provided, otherwise fallback to window.location
+    if (router && typeof router.push === 'function') {
+      router.push(url);
     } else {
-      navigateTo(url);
+      window.location.href = url;
     }
   };
 };

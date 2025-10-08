@@ -113,10 +113,9 @@ const CarsFilters = memo(function CarsFilters({
   }, [filters, onFiltersChange]);
 
   const clearFilter = useCallback((filterType: keyof CarFilters) => {
-    onFiltersChange({
-      ...filters,
-      [filterType]: undefined
-    });
+    const newFilters = { ...filters };
+    delete newFilters[filterType];
+    onFiltersChange(newFilters);
   }, [filters, onFiltersChange]);
 
   return (
@@ -143,7 +142,7 @@ const CarsFilters = memo(function CarsFilters({
             <Badge key={category} variant="outline" className="text-xs">
               {category}
               <button 
-                onClick={() => clearFilter('category')}
+                onClick={() => handleCategoryChange(category, false)}
                 className="ml-1 hover:text-red-500"
               >
                 <X className="h-3 w-3" />
@@ -154,7 +153,7 @@ const CarsFilters = memo(function CarsFilters({
             <Badge key={fuel} variant="outline" className="text-xs">
               {fuel}
               <button 
-                onClick={() => clearFilter('fuelType')}
+                onClick={() => handleFuelTypeChange(fuel, false)}
                 className="ml-1 hover:text-red-500"
               >
                 <X className="h-3 w-3" />
@@ -165,7 +164,7 @@ const CarsFilters = memo(function CarsFilters({
             <Badge key={trans} variant="outline" className="text-xs">
               {trans}
               <button 
-                onClick={() => clearFilter('transmission')}
+                onClick={() => handleTransmissionChange(trans, false)}
                 className="ml-1 hover:text-red-500"
               >
                 <X className="h-3 w-3" />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { createNavigationHandler } from '@/lib/navigation-utils';
 import { ChevronDown, Car } from 'lucide-react';
 import { CarCategory } from '@/lib/types';
@@ -16,6 +16,7 @@ const CarCategoryDropdown: React.FC<CarCategoryDropdownProps> = ({
   currentLang, 
   isScrolled = false 
 }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -148,15 +149,15 @@ const CarCategoryDropdown: React.FC<CarCategoryDropdownProps> = ({
         <div className="py-2 px-2">
           <div className="grid grid-cols-2 gap-1">
             {carCategories.map((category) => (
-              <a
+              <button
                 key={category.id}
-                href={`/cars?category=${category.displayName}`}
                 onClick={(e) => {
+                  e.preventDefault();
                   setIsOpen(false);
                   setIsHovering(false);
-                  createNavigationHandler(`/cars?category=${category.displayName}`)(e);
+                  router.push(`/cars?category=${encodeURIComponent(category.displayName)}`);
                 }}
-                className="flex items-center px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 group cursor-pointer rounded-md"
+                className="flex items-center px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 group cursor-pointer rounded-md w-full text-left"
                 role="menuitem"
               >
                 {/* Category Icon */}
@@ -182,25 +183,25 @@ const CarCategoryDropdown: React.FC<CarCategoryDropdownProps> = ({
                     </p>
                   )}
                 </div>
-              </a>
+              </button>
             ))}
           </div>
         </div>
 
         {/* Footer */}
         <div className="px-4 py-3 border-t border-gray-200 dark:border-[#2a2a2a]">
-          <a
-            href="/cars"
+          <button
             onClick={(e) => {
+              e.preventDefault();
               setIsOpen(false);
               setIsHovering(false);
-              createNavigationHandler("/cars")(e);
+              router.push("/cars");
             }}
             className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-brand-gold hover:text-brand-gold/80 hover:bg-brand-gold/5 rounded-md transition-colors duration-150 cursor-pointer"
           >
             Bütün Maşınları Gör
             <ChevronDown className="h-4 w-4 ml-1 rotate-[-90deg]" />
-          </a>
+          </button>
         </div>
       </div>
     </div>

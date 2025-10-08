@@ -19,12 +19,13 @@ interface ClientLayoutProps {
 
 const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   const [currentLang, setCurrentLang] = useState('az');
+  const [isHydrated, setIsHydrated] = useState(false);
   const t = useTranslation(currentLang);
   const pathname = usePathname();
 
-  // Removed animation hooks for better performance
-
+  // Handle hydration and language loading
   useEffect(() => {
+    setIsHydrated(true);
     const savedLang = localStorage.getItem('ramservis_language');
     if (savedLang && ['az', 'en', 'ru', 'ar'].includes(savedLang)) {
       setCurrentLang(savedLang);
@@ -97,14 +98,16 @@ const ClientLayout: React.FC<ClientLayoutProps> = ({ children }) => {
   return (
     <>
       {children}
-      <WhatsAppButton
-        phoneNumber="+994708559001"
-        currentLang={currentLang}
-        t={t}
-        position="bottom-right"
-        showOnMobile={true}
-        contextualMessage={getContextualMessage()}
-      />
+      {isHydrated && (
+        <WhatsAppButton
+          phoneNumber="+994708559001"
+          currentLang={currentLang}
+          t={t}
+          position="bottom-right"
+          showOnMobile={true}
+          contextualMessage={getContextualMessage()}
+        />
+      )}
       {/* Performance dashboard removed for production */}
     </>
   );

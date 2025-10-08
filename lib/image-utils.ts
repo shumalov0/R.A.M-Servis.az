@@ -50,22 +50,50 @@ export async function getOptimalImageFormat(): Promise<'avif' | 'webp' | 'jpeg'>
 }
 
 /**
- * Generate responsive image sizes string
+ * Generate responsive image sizes string - optimized for car images
  */
 export function generateImageSizes(width?: number): string {
   if (!width) {
     return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
   }
   
+  // For small thumbnails (car cards)
+  if (width <= 300) {
+    return '(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 300px';
+  }
+  
+  // For medium images (car detail thumbnails)
   if (width <= 400) {
-    return '(max-width: 640px) 100vw, 400px';
+    return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px';
   }
   
+  // For large images (main car photos)
   if (width <= 800) {
-    return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 800px';
+    return '(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 800px';
   }
   
-  return '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
+  // For hero images
+  return '(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px';
+}
+
+/**
+ * Get optimal image dimensions based on usage context
+ */
+export function getOptimalImageDimensions(context: 'thumbnail' | 'card' | 'detail' | 'hero' | 'gallery') {
+  switch (context) {
+    case 'thumbnail':
+      return { width: 150, height: 100, quality: 75 };
+    case 'card':
+      return { width: 300, height: 200, quality: 80 };
+    case 'detail':
+      return { width: 600, height: 400, quality: 85 };
+    case 'gallery':
+      return { width: 800, height: 600, quality: 90 };
+    case 'hero':
+      return { width: 1200, height: 800, quality: 90 };
+    default:
+      return { width: 400, height: 300, quality: 80 };
+  }
 }
 
 /**

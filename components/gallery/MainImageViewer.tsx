@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 // Removed animation imports for better performance
 import { announceToScreenReader } from '@/lib/accessibility-utils';
 import { getSafeImageSrc, FALLBACK_IMAGES, addCacheBuster } from '@/lib/image-utils';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 
 interface MainImageViewerProps {
   images: string[];
@@ -134,8 +135,8 @@ export default function MainImageViewer({
     setRetryCount(0);
   };
 
-  const handleImageError = (event: any) => {
-    const currentSrc = event.target.src;
+  const handleImageError = () => {
+    const currentSrc = currentImageSrc;
     const currentFallbackIndex = FALLBACK_IMAGES.findIndex(img => 
       currentSrc.includes(img.split('/').pop()?.split('?')[0] || '')
     );
@@ -208,18 +209,15 @@ export default function MainImageViewer({
           </Button>
         </div>
       ) : (
-        <img
+        <OptimizedImage
           src={currentImageSrc}
           alt={`${carInfo.brand} ${carInfo.model} ${carInfo.year} - Image ${currentIndex + 1} of ${images.length}. ${isZoomed ? 'Zoomed view.' : 'Click to zoom or open fullscreen.'}`}
-          className={`w-full h-full object-cover transition-transform duration-300 cursor-pointer ${isZoomed ? 'scale-110' : 'scale-100'}`}
+          fill
+          className={`object-cover transition-transform duration-300 cursor-pointer ${isZoomed ? 'scale-110' : 'scale-100'}`}
           onLoad={handleImageLoad}
           onError={handleImageError}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleZoom();
-          }}
-          loading={currentIndex === 0 ? 'eager' : 'lazy'}
-          crossOrigin="anonymous"
+          context="gallery"
+          isAboveFold={currentIndex === 0}
         />
       )}
 
